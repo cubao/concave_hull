@@ -1,0 +1,48 @@
+name: Conda
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest] # TODO: windows-latest is broken on conda, check why
+        python-version: ["3.8", "3.10"]
+
+    runs-on: ${{ matrix.platform }}
+
+    # The setup-miniconda action needs this to activate miniconda
+    defaults:
+      run:
+        shell: "bash -l {0}"
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Get conda
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: strict
+
+      # Currently conda-build requires the dead package "toml" but doesn't declare it
+      - name: Prepare
+        run: conda install conda-build conda-verify numpy pytest toml
+
+      - name: Build
+        run: conda build conda.recipe
+
+      - name: Install
+        run: conda install -c ${CONDA_PREFIX}/conda-bld/ pybind11_rdp
+
+      - name: Test
+        run: python -m pytest

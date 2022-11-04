@@ -1,0 +1,39 @@
+package:
+  name: pybind11_rdp
+  version: 0.1.1
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: python -m pip install . -vvv
+
+requirements:
+  build:
+    - "{{ compiler('cxx') }}"
+    - cmake
+    - ninja
+
+  host:
+    - python
+    - pip !=22.1.0
+
+  run:
+    - python
+
+
+test:
+  requires:
+    - pytest
+    - numpy
+  imports:
+    - pybind11_rdp
+  source_files:
+    - tests
+  commands:
+    - python -m pytest
+
+about:
+  summary: C++/pybind11/NumPy implementation of the Ramer-Douglas-Peucker algorithm (Ramer 1972; Douglas and Peucker 1973) for 2D and 3D data.
+  license_file: LICENSE
