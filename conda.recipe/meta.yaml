@@ -1,6 +1,6 @@
 package:
   name: concave_hull
-  version: 0.0.1
+  version: 0.0.2
 
 source:
   path: ..
@@ -35,5 +35,5 @@ test:
     - python -m pytest
 
 about:
-  summary: C++/pybind11/NumPy implementation of the Ramer-Douglas-Peucker algorithm (Ramer 1972; Douglas and Peucker 1973) for 2D and 3D data.
+  summary: A very fast 2D concave hull algorithm
   license_file: LICENSE
