@@ -1,13 +1,13 @@
-# Ramer-Douglas-Peucker Algorithm (c++ binding for python via pybind11)
+# concave_hull
 
->   A speed up (~8000x) version of [python version of rdp](https://github.com/fhirschmann/rdp).
+A very fast 2D concave hull algorithm.
 
-C++/pybind11/NumPy implementation of the Ramer-Douglas-Peucker algorithm (Ramer 1972; Douglas and Peucker 1973) for 2D and 3D data.
+Source from:
 
-The Ramer-Douglas-Peucker algorithm is an algorithm for reducing the number of points in a curve that is approximated by a series of points.
+-   https://github.com/mapbox/concaveman
+-   https://github.com/sadaszewski/concaveman-cpp
 
-
-## Installation
+TODO: integrate concaveman.
 
 ### via pip
 
