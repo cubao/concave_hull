@@ -21,7 +21,7 @@ convex_hull = ConvexHull(points)
 
 plt.plot(points[:, 0], points[:, 1], "o")
 for simplex in convex_hull.simplices:
-    plt.plot(points[simplex, 0], points[simplex, 1], "k-")
+    plt.plot(points[simplex, 0], points[simplex, 1], "g-", alpha=0.5)
 
 idxes = concave_hull_indexes(
     points[:, :2],
@@ -31,5 +31,5 @@ idxes = concave_hull_indexes(
 
 for f, t in zip(idxes[:-1], idxes[1:]):
     seg = points[[f, t]]
-    plt.plot(seg[:, 0], seg[:, 1], "k-")
+    plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
 plt.show()
