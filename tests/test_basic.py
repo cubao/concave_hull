@@ -1,18 +1,136 @@
-from concave_hull import LineSegment, rdp
+import numpy as np
+
+from concave_hull import concave_hull_indexes
 
 
-def test_segment():
-    seg = LineSegment([0, 0, 0], [10, 0, 0])
-    assert 4.0 == seg.distance([5.0, 4.0, 0.0])
-    assert 5.0 == seg.distance([-4.0, 3.0, 0.0])
-    assert 5.0 == seg.distance([14.0, 3.0, 0.0])
-    seg = LineSegment([0, 0, 0], [0, 0, 0])
-    assert 5.0 == seg.distance([3.0, 4.0, 0.0])
-    assert 5.0 == seg.distance([-4.0, 3.0, 0.0])
-    assert 13.0 == seg.distance([5.0, 12.0, 0.0])
+# see ../test.py for testing data
+def __all_points():
+    points = []
+    c = np.array([250, 250])
+    for x in np.arange(100, 400, 5 * np.pi):
+        for y in np.arange(100, 400, 5 * np.pi):
+            if x > c[0] and y > c[1]:
+                continue
+            r = np.linalg.norm(c - [x, y])
+            if r > 150:
+                continue
+            points.append([x, y])
+    return np.array(points)
 
 
-def test_rdp():
-    assert rdp([[1, 1], [2, 2], [3, 3], [4, 4]], epsilon=1e-9).shape == (2, 2)
-    assert rdp([[0, 0], [5, 1 + 1e-3], [10, 0]], epsilon=1).shape == (3, 2)
-    assert rdp([[0, 0], [5, 1 - 1e-3], [10, 0]], epsilon=1).shape == (2, 2)
+def __convex_hull_indexes():
+    return [208, 138, 83, 49, 19, 7, 0, 8, 34, 66, 166, 183, 198, 204]
+
+
+def test_concave_hull():
+    points = __all_points()
+    convex_hull = __convex_hull_indexes()
+
+    expected = [
+        205,
+        206,
+        208,
+        207,
+        203,
+        197,
+        190,
+        182,
+        174,
+        165,
+        156,
+        147,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        119,
+        101,
+        83,
+        65,
+        49,
+        33,
+        19,
+        18,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        9,
+        8,
+        20,
+        34,
+        50,
+        66,
+        84,
+        102,
+        120,
+        139,
+        148,
+        157,
+        166,
+        175,
+        183,
+        191,
+        198,
+        199,
+        204,
+    ]
+    idxes = concave_hull_indexes(
+        points,
+        convex_hull_indexes=convex_hull,
+    )
+    assert np.all(idxes == expected)
+
+    expected = [
+        208,
+        207,
+        203,
+        197,
+        190,
+        182,
+        174,
+        165,
+        156,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        83,
+        49,
+        19,
+        7,
+        4,
+        1,
+        0,
+        8,
+        34,
+        66,
+        84,
+        102,
+        139,
+        166,
+        183,
+        198,
+        204,
+    ]
+    idxes = concave_hull_indexes(
+        points,
+        convex_hull_indexes=convex_hull,
+        length_threshold=50,
+    )
+    assert np.all(idxes == expected)

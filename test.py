@@ -35,6 +35,7 @@ for simplex in convex_hull.simplices:
 idxes = concave_hull_indexes(
     points[:, :2],
     convex_hull_indexes=convex_hull.vertices.astype(np.int32),
+    length_threshold=50,
 )
 
 for f, t in zip(idxes[:-1], idxes[1:]):
