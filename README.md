@@ -2,14 +2,12 @@
 
 A very fast 2D concave hull algorithm.
 
-Source from:
+Credits goes to:
 
 -   https://github.com/mapbox/concaveman
 -   https://github.com/sadaszewski/concaveman-cpp
 
-TODO: integrate concaveman.
-
-https://stackoverflow.com/questions/18169587/get-the-index-of-point-which-create-convexhull
+## Install
 
 ### via pip
 
@@ -34,47 +32,44 @@ pip install git+https://github.com/cubao/concave_hull.git
 
 ## Usage
 
-Test installation: `python -c 'from concave_hull import rdp; print(rdp([[1, 1], [2, 2], [3, 3], [4, 4]]))'`
-
-Simple pythonic interface:
+Signature:
 
 ```python
-from concave_hull import rdp
-
-rdp([[1, 1], [2, 2], [3, 3], [4, 4]])
-[[1, 1], [4, 4]]
+concave_hull_indexes(
+       points: numpy.ndarray[numpy.float64[m, 2]],
+       *,
+       convex_hull_indexes: numpy.ndarray[numpy.int32[m, 1]],
+       concavity: float = 2.0,
+       length_threshold: float = 0.0,
+) -> numpy.ndarray[numpy.int32[m, 1]]
 ```
 
-With epsilon=0.5:
+-   `concavity` is a relative measure of concavity. 1 results in a relatively
+    detailed shape, Infinity results in a convex hull. You can use values lower
+    than 1, but they can produce pretty crazy shapes.
+-   `lengthThreshold`: when a segment length is under this threshold, it stops
+    being considered for further detalization. Higher values result in simpler
+    shapes.
+
+(document from <https://github.com/mapbox/concaveman>)
+
+Example (see full code in [`test.py`](test.py)):
 
 ```python
-rdp([[1, 1], [1, 1.1], [2, 2]], epsilon=0.5)
-[[1.0, 1.0], [2.0, 2.0]]
-```
+from concave_hull import concave_hull_indexes
 
-Numpy interface:
+idxes = concave_hull_indexes(
+    points[:, :2],          # it's 2D concave hull, points should be N-by-2 numpy array
+    convex_hull_indexes=convex_hull.vertices.astype(np.int32), # can be calculated by scipy
+    length_threshold=50,
+)
 
-```python
-import numpy as np
-from concave_hull import rdp
-
-rdp(np.array([1, 1, 2, 2, 3, 3, 4, 4]).reshape(4, 2))
-array([[1, 1],
-       [4, 4]])
+# you can get coordinates by `points[idxes]`
 ```
 
 ## Tests
 
 ```
 python3 test.py
+python3 tests/test_basic.py
 ```
-
-## Links
-
--   https://github.com/fhirschmann/rdp
-
-## References
-
-Douglas, David H, and Thomas K Peucker. 1973. “Algorithms for the Reduction of the Number of Points Required to Represent a Digitized Line or Its Caricature.” Cartographica: The International Journal for Geographic Information and Geovisualization 10 (2): 112–122.
-
-Ramer, Urs. 1972. “An Iterative Procedure for the Polygonal Approximation of Plane Curves.” Computer Graphics and Image Processing 1 (3): 244–256.
