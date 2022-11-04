@@ -1,10 +1,11 @@
 import time
 
 import numpy as np
+from rdp import rdp as rdp_python
+
 from concave_hull import LineSegment
 from concave_hull import rdp as rdp_pybind
 from concave_hull import rdp_mask as rdp_mask
-from rdp import rdp as rdp_python
 
 seg = LineSegment([0, 0, 0], [10, 0, 0])
 assert 4.0 == seg.distance([5.0, 4.0, 0.0])

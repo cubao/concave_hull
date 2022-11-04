@@ -25,12 +25,6 @@
 //#define DEBUG // uncomment to dump debug info to screen
 //#define DEBUG_2 // uncomment to dump second-level debug info to screen
 
-template <typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args &&...args)
-{
-    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-}
-
 template <class T> class compare_first
 {
   public:
@@ -213,7 +207,7 @@ template <class T, int DIM, int MAX_CHILDREN, class DATA> class rtree
 
         m_bounds = updated_bounds(bounds);
         if (m_children.size() < MAX_CHILDREN) {
-            auto r = make_unique<type>(data, bounds);
+            auto r = std::make_unique<type>(data, bounds);
             m_children.push_back(std::move(r));
             return;
         }
@@ -236,8 +230,8 @@ template <class T, int DIM, int MAX_CHILDREN, class DATA> class rtree
             return;
         }
 
-        auto leaf = make_unique<type>(best_child.get().data(),
-                                      best_child.get().bounds());
+        auto leaf = std::make_unique<type>(best_child.get().data(),
+                                           best_child.get().bounds());
         best_child.get().m_is_leaf = false;
         best_child.get().m_data = data_type();
         best_child.get().m_children.push_back(std::move(leaf));
@@ -724,7 +718,7 @@ std::vector<int> concaveman_indexes(
     rtree<T, 2, MAX_CHILDREN, point_type> tree;
     std::map<std::array<T, 2>, int> points_index;
     for (int index = 0; index < int(points.size()); index++) {
-        point_type p{points[index][0], points[index][1], index};
+        point_type p{points[index][0], points[index][1], (T)index};
         tree.insert(p, {p[0], p[1], p[0], p[1]});
         points_index.insert(
             std::pair<std::array<T, 2>, int>(points[index], index));
@@ -742,7 +736,7 @@ std::vector<int> concaveman_indexes(
     // queue with the nodes
     for (auto &idx : hull) {
         auto &pp = points[idx];
-        point_type p{pp[0], pp[1], points_index[pp]};
+        point_type p{pp[0], pp[1], (T)points_index[pp]};
         tree.erase(p, {p[0], p[1], p[0], p[1]});
         last = circList.insert(last, p);
         queue.push_back(last);
