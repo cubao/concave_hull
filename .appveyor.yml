@@ -21,7 +21,7 @@ build_script:
 - ps: |
     python -m build -s
     cd dist
-    python -m pip install --verbose concave_hull-0.0.1.tar.gz
+    python -m pip install --verbose concave_hull-0.0.2.tar.gz
     cd ..
 test_script:
 - ps: python -m pytest
