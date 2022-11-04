@@ -10,6 +10,8 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
+#include "concaveman.h"
+
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
@@ -117,6 +119,23 @@ inline RowVectors douglas_simplify(const Eigen::Ref<const RowVectors> &coords,
     return select_by_mask(coords, douglas_simplify_mask(coords, epsilon));
 }
 
+Eigen::VectorXi concave_hull_indexes(
+    const RowVectorsNx2 &eigen_points,
+    const Eigen::Ref<const Eigen::VectorXi> &convex_hull_indexes,
+    double concavity, double lengthThreshould)
+{
+    std::vector<int> hull;
+    hull.resize(convex_hull_indexes.size());
+    Eigen::VectorXi::Map(&hull[0], hull.size()) = convex_hull_indexes;
+
+    std::vector<std::array<double, 2>> points;
+    points.resize(eigen_points.rows());
+    RowVectorsNx2::Map(&points[0][0], points.size(), 2) = eigen_points;
+    auto indexes = concaveman_indexes<double, 16>(points, hull, concavity,
+                                                  lengthThreshould);
+    return Eigen::VectorXi::Map(&indexes[0], indexes.size());
+}
+
 namespace py = pybind11;
 using namespace pybind11::literals;
 
@@ -189,6 +208,10 @@ PYBIND11_MODULE(concave_hull, m)
             return douglas_simplify_mask(xyzs, epsilon);
         },
         rdp_mask_doc, "coords"_a, py::kw_only(), "epsilon"_a = 0.0);
+
+    m.def("concave_hull_indexes", &concave_hull_indexes, "points"_a,
+          py::kw_only(), "convex_hull_indexes"_a, "concavity"_a = 2.0,
+          "length_threshold"_a = 0.0);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

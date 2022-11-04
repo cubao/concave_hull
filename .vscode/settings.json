@@ -101,5 +101,5 @@
         "titleBar.activeBackground": "#1B4838",
         "titleBar.activeForeground": "#F7FCFA"
     },
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "black"
 }
