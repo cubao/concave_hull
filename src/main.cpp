@@ -120,13 +120,13 @@ inline RowVectors douglas_simplify(const Eigen::Ref<const RowVectors> &coords,
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-PYBIND11_MODULE(pybind11_rdp, m)
+PYBIND11_MODULE(concave_hull, m)
 {
     m.doc() = R"pbdoc(
         c++/pybind11 version of Ramer-Douglas-Peucker (rdp) algorithm
         -------------------------------------------------------------
 
-        .. currentmodule:: pybind11_rdp
+        .. currentmodule:: concave_hull
 
         .. autosummary::
            :toctree: _generate
@@ -147,7 +147,7 @@ PYBIND11_MODULE(pybind11_rdp, m)
         Simplifies a given array of points using the Ramer-Douglas-Peucker algorithm.
 
         Example:
-        >>> from pybind11_rdp import rdp
+        >>> from concave_hull import rdp
         >>> rdp([[1, 1], [2, 2], [3, 3], [4, 4]])
         [[1, 1], [4, 4]]
     )pbdoc";

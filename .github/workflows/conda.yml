@@ -42,7 +42,7 @@ jobs:
         run: conda build conda.recipe
 
       - name: Install
-        run: conda install -c ${CONDA_PREFIX}/conda-bld/ pybind11_rdp
+        run: conda install -c ${CONDA_PREFIX}/conda-bld/ concave_hull
 
       - name: Test
         run: python -m pytest

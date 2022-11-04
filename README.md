@@ -12,32 +12,32 @@ The Ramer-Douglas-Peucker algorithm is an algorithm for reducing the number of p
 ### via pip
 
 ```
-pip install pybind11-rdp
+pip install concave_hull
 ```
 
 ### from source
 
 ```bash
-git clone --recursive https://github.com/cubao/pybind11-rdp
-pip install ./pybind11-rdp
+git clone --recursive https://github.com/cubao/concave_hull
+pip install ./concave_hull
 ```
 
 Or
 
 ```
-pip install git+https://github.com/cubao/pybind11-rdp.git
+pip install git+https://github.com/cubao/concave_hull.git
 ```
 
-(you can build wheels for later reuse by ` pip wheel git+https://github.com/cubao/pybind11-rdp.git`)
+(you can build wheels for later reuse by ` pip wheel git+https://github.com/cubao/concave_hull.git`)
 
 ## Usage
 
-Test installation: `python -c 'from pybind11_rdp import rdp; print(rdp([[1, 1], [2, 2], [3, 3], [4, 4]]))'`
+Test installation: `python -c 'from concave_hull import rdp; print(rdp([[1, 1], [2, 2], [3, 3], [4, 4]]))'`
 
 Simple pythonic interface:
 
 ```python
-from pybind11_rdp import rdp
+from concave_hull import rdp
 
 rdp([[1, 1], [2, 2], [3, 3], [4, 4]])
 [[1, 1], [4, 4]]
@@ -54,7 +54,7 @@ Numpy interface:
 
 ```python
 import numpy as np
-from pybind11_rdp import rdp
+from concave_hull import rdp
 
 rdp(np.array([1, 1, 2, 2, 3, 3, 4, 4]).reshape(4, 2))
 array([[1, 1],

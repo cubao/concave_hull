@@ -1,4 +1,4 @@
-from pybind11_rdp import LineSegment, rdp
+from concave_hull import LineSegment, rdp
 
 
 def test_segment():

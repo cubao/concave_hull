@@ -121,15 +121,15 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="pybind11_rdp",
+    name="concave_hull",
     version="0.1.1",
     author="tzx",
     author_email="dvorak4tzx@gmail.com",
-    url="https://github.com/cubao/pybind11-rdp",
+    url="https://github.com/cubao/concave_hull",
     description="C++/pybind11/NumPy implementation of the Ramer-Douglas-Peucker algorithm (Ramer 1972; Douglas and Peucker 1973) for 2D and 3D data.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    ext_modules=[CMakeExtension("pybind11_rdp")],
+    ext_modules=[CMakeExtension("concave_hull")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     install_requires=["numpy"],

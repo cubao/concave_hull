@@ -1,4 +1,4 @@
-pybind11_rdp Documentation
+concave_hull Documentation
 ============================
 
 Contents:
@@ -6,4 +6,4 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   pybind11_rdp
+   concave_hull

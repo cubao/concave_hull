@@ -1,5 +1,5 @@
 package:
-  name: pybind11_rdp
+  name: concave_hull
   version: 0.1.1
 
 source:
@@ -28,7 +28,7 @@ test:
     - pytest
     - numpy
   imports:
-    - pybind11_rdp
+    - concave_hull
   source_files:
     - tests
   commands:
