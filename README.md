@@ -2,6 +2,8 @@
 
 A very fast 2D concave hull algorithm.
 
+![](hull.png)
+
 Credits goes to:
 
 -   https://github.com/mapbox/concaveman
