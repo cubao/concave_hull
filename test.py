@@ -15,7 +15,7 @@ for x in np.arange(100, 400, 5 * np.pi):
             continue
         points.append([x, y])
 points = np.array(points)
-convex_hull = ConvexHull(points)
+convex_hull = ConvexHull(points[:, :2])  # it's already N-by-2, I'm just emphasizing
 
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.ConvexHull.html
 
@@ -28,8 +28,9 @@ idxes = concave_hull_indexes(
     convex_hull_indexes=convex_hull.vertices.astype(np.int32),
     length_threshold=50,
 )
+# you can get coordinates by `points[idxes]`
 
-for f, t in zip(idxes[:-1], idxes[1:]):
+for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
     seg = points[[f, t]]
     plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
 plt.show()
