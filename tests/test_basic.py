@@ -45,3 +45,5 @@ def test_concave_hull():
         length_threshold=50,
     )
     assert np.all(idxes == __concave_hull_indexes_thresh50())
+    idxes = concave_hull_indexes(points, length_threshold=50)
+    assert np.all(idxes == __concave_hull_indexes_thresh50())
