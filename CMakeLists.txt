@@ -26,9 +26,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(PYBIND11_CPP_STANDARD -std=c++14)
 
 add_subdirectory(pybind11)
-pybind11_add_module(concave_hull src/main.cpp)
+pybind11_add_module(pybind11_concave_hull src/main.cpp)
 
 # EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
 # define (VERSION_INFO) here.
-target_compile_definitions(concave_hull
+target_compile_definitions(pybind11_concave_hull
                            PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})

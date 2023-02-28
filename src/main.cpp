@@ -39,7 +39,7 @@ Eigen::VectorXi concave_hull_indexes(
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-PYBIND11_MODULE(concave_hull, m)
+PYBIND11_MODULE(pybind11_concave_hull, m)
 {
     m.doc() = R"pbdoc(
         A very fast 2D concave hull algorithm
