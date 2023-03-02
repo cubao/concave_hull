@@ -37,8 +37,8 @@ python_sdist:
 	$(PYTHON) setup.py sdist
 	# tar -tvf dist/concave_hull-*.tar.gz
 python_test:
-	$(PYTHON) -c 'from concave_hull import rdp; print(rdp([[1, 1], [2, 2], [3, 3], [4, 4]]))'
 	$(PYTHON) test.py
+	pytest --capture=tee-sys tests
 
 # conda create -y -n py36 python=3.6
 # conda create -y -n py37 python=3.7

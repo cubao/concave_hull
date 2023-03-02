@@ -37,19 +37,26 @@ pip install git+https://github.com/cubao/concave_hull.git
 Signature:
 
 ```python
+# get concave hull indexes
 concave_hull_indexes(
-       points: numpy.ndarray[numpy.float64[m, 2]],
+       points: Union[numpy.ndarray, List, Tuple],
        *,
-       convex_hull_indexes: numpy.ndarray[numpy.int32[m, 1]],
        concavity: float = 2.0,
        length_threshold: float = 0.0,
+       convex_hull_indexes: numpy.ndarray[numpy.int32[m, 1]] = None, # will use integrated scipy ConvexHull if None
 ) -> numpy.ndarray[numpy.int32[m, 1]]
+
+# get concave hull points
+concave_hull(
+       points: Union[numpy.ndarray, List, Tuple],
+       *args, *kwargs # will proxy all to covcave_hull_indexes
+) -> Union[numpy.ndarray, List, Tuple]
 ```
 
 -   `concavity` is a relative measure of concavity. 1 results in a relatively
     detailed shape, Infinity results in a convex hull. You can use values lower
     than 1, but they can produce pretty crazy shapes.
--   `lengthThreshold`: when a segment length is under this threshold, it stops
+-   `length_threshold`: when a segment length is under this threshold, it stops
     being considered for further detalization. Higher values result in simpler
     shapes.
 
