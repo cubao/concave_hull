@@ -1,10 +1,12 @@
-from pybind11_concave_hull import concave_hull_indexes as concave_hull_indexes_impl  # noqa
-from pybind11_concave_hull import __version__  # noqa
+from typing import List, Tuple, Union
 
 import numpy as np
+from pybind11_concave_hull import __version__  # noqa
+from pybind11_concave_hull import (  # noqa
+    concave_hull_indexes as concave_hull_indexes_impl,
+)
 from scipy.spatial import ConvexHull
 
-from typing import Union, List, Tuple
 
 def concave_hull_indexes(
     points: Union[np.ndarray, List, Tuple],
@@ -13,7 +15,7 @@ def concave_hull_indexes(
     length_threshold: float = 0.0,
     convex_hull_indexes: np.ndarray = None,
 ):
-    '''
+    """
     Get concave hull indexes of points.
 
     -   `points` is an array of [x, y, [z]] points (can be numpy.ndarray, list, or tuple).
@@ -25,7 +27,7 @@ def concave_hull_indexes(
         shapes.
 
     See original document here: https://github.com/mapbox/concaveman
-    '''
+    """
     points = np.asarray(points, dtype=np.float64)
     points = points[:, :2]
     if convex_hull_indexes is None:
@@ -38,6 +40,11 @@ def concave_hull_indexes(
         length_threshold=length_threshold,
     )
 
+
 def concave_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
     indexes = concave_hull_indexes(points, *args, **kwargs)
-    return points[indexes] if isinstance(points, np.ndarray) else [points[i] for i in indexes]
+    return (
+        points[indexes]
+        if isinstance(points, np.ndarray)
+        else [points[i] for i in indexes]
+    )
