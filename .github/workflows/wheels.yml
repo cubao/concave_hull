@@ -46,7 +46,7 @@ jobs:
     - uses: pypa/cibuildwheel@v2.12.0
       env:
         CIBW_ARCHS: auto64
-        CIBW_BEFORE_BUILD: pip install numpy scipy --prefer-binary
+        CIBW_BEFORE_BUILD: pip install numpy scipy==1.9.1 --prefer-binary
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
         CIBW_SKIP: pp* *i686
 
