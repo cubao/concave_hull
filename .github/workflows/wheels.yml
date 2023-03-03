@@ -45,8 +45,9 @@ jobs:
 
     - uses: pypa/cibuildwheel@v2.12.0
       env:
-        CIBW_ARCHS_MACOS: auto universal2
-        CIBW_BUILD: cp38-* # speed up
+        CIBW_ARCHS: auto64
+        CIBW_BEFORE_BUILD: pip install numpy scipy --prefer-binary
+        CIBW_BUILD: cp36-* # speed up
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
         CIBW_SKIP: pp* *i686
 
