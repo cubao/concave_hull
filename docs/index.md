@@ -2,9 +2,7 @@
 
 A very fast 2D concave hull algorithm.
 
-![](docs/hull.png)
-
-Credits goes to:
+Released as a python package for easy integration. All credits goes to:
 
 -   <https://github.com/mapbox/concaveman>
 -   <https://github.com/sadaszewski/concaveman-cpp>
@@ -62,7 +60,7 @@ concave_hull(
 
 (document from <https://github.com/mapbox/concaveman>)
 
-Example (see full code in [`test.py`](test.py)):
+Example (see full code in [`test.py`](https://github.com/cubao/concave_hull/blob/master/test.py)):
 
 ```python
 import matplotlib.pyplot as plt
@@ -107,9 +105,9 @@ for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
 plt.show()
 ```
 
-## Tests
+![](hull.png)
 
-```
-make python_install
-make python_test
-```
+<div class="text-center">
+<a href="https://github.com/cubao/concave_hull" class="btn btn-primary" role="button">Code on GitHub</a>
+<a href="https://pypi.org/project/concave-hull" class="btn btn-primary" role="button">Package on PyPi</a>
+</div>

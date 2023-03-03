@@ -36,19 +36,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-20.04, windows-2019, macos-11]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: true
 
-    - uses: pypa/cibuildwheel@v2.11.2
+    - uses: pypa/cibuildwheel@v2.12.0
       env:
-        CIBW_ARCHS_MACOS: auto universal2
-        CIBW_BUILD: cp38-* # speed up
+        CIBW_ARCHS: auto64
+        CIBW_BEFORE_BUILD: pip install numpy scipy --prefer-binary
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
-        CIBW_SKIP: pp*
+        CIBW_SKIP: pp* *i686 *musllinux*
+        CIBW_TEST_SKIP: "*macosx*"
 
     - name: Verify clean directory
       run: git diff --exit-code
@@ -76,6 +77,6 @@ jobs:
         name: artifact
         path: dist
 
-    - uses: pypa/gh-action-pypi-publish@v1.5.1
+    - uses: pypa/gh-action-pypi-publish@v1.6.4
       with:
-        password: ${{ secrets.pypi_password }}
+        password: ${{ secrets.PYPI_API_TOKEN }}

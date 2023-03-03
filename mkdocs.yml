@@ -1,0 +1,16 @@
+site_name: concave_hull
+site_url: https://concave_hull.readthedocs.io
+site_description: A very fast 2D concave hull algorithm, for python.
+site_author: district10
+
+repo_url: https://github.com/cubao/concave_hull
+edit_uri: blob/master/docs/
+
+theme: readthedocs
+nav:
+    - Home: index.md
+    - About:
+        - Release Notes: about/release-notes.md
+        - License: about/license.md
+
+copyright: Copyright &copy; 2023 <a href="https://github.com/cubao">cubao team</a>.
