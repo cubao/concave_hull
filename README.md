@@ -2,18 +2,18 @@
 
 A very fast 2D concave hull algorithm.
 
-![](hull.png)
+![](docs/hull.png)
 
 Credits goes to:
 
--   https://github.com/mapbox/concaveman
--   https://github.com/sadaszewski/concaveman-cpp
+-   <https://github.com/mapbox/concaveman>
+-   <https://github.com/sadaszewski/concaveman-cpp>
 
 ## Install
 
 ### via pip
 
-```
+```bash
 pip install concave_hull
 ```
 
@@ -26,7 +26,7 @@ pip install ./concave_hull
 
 Or
 
-```
+```bash
 pip install git+https://github.com/cubao/concave_hull.git
 ```
 

@@ -40,6 +40,11 @@ python_test:
 	$(PYTHON) test.py
 	pytest --capture=tee-sys tests
 
+docs_build:
+	mkdocs build
+docs_serve:
+	mkdocs serve
+
 # conda create -y -n py36 python=3.6
 # conda create -y -n py37 python=3.7
 # conda create -y -n py38 python=3.8
