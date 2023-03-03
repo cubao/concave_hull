@@ -46,9 +46,9 @@ jobs:
     - uses: pypa/cibuildwheel@v2.12.0
       env:
         CIBW_ARCHS: auto64
-        CIBW_BEFORE_BUILD: pip install numpy scipy==1.9.1 --prefer-binary
+        CIBW_BEFORE_BUILD: pip install numpy scipy --prefer-binary
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
-        CIBW_SKIP: pp* *i686
+        CIBW_SKIP: pp* *i686 *musllinux*
         CIBW_TEST_SKIP: "*macosx*"
 
     - name: Verify clean directory
@@ -79,4 +79,4 @@ jobs:
 
     - uses: pypa/gh-action-pypi-publish@v1.6.4
       with:
-        password: ${{ secrets.pypi_password }}
+        password: ${{ secrets.PYPI_API_TOKEN }}
