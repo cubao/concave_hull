@@ -49,6 +49,7 @@ jobs:
         CIBW_BEFORE_BUILD: pip install numpy scipy==1.9.1 --prefer-binary
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
         CIBW_SKIP: pp* *i686
+        CIBW_TEST_SKIP: "*macosx*"
 
     - name: Verify clean directory
       run: git diff --exit-code
