@@ -1,9 +1,9 @@
-site_name: cmake-example
-site_url: https://cmake-example.readthedocs.io
-site_description: Example pybind11 module built with a CMake-based build system.
+site_name: concave_hull
+site_url: https://concave_hull.readthedocs.io
+site_description: A very fast 2D concave hull algorithm, for python.
 site_author: district10
 
-repo_url: https://github.com/cubao/cmake_example
+repo_url: https://github.com/cubao/concave_hull
 edit_uri: blob/master/docs/
 
 theme: readthedocs
@@ -13,4 +13,4 @@ nav:
         - Release Notes: about/release-notes.md
         - License: about/license.md
 
-copyright: Copyright &copy; line
+copyright: Copyright &copy; 2023 <a href="https://github.com/cubao">cubao team</a>.

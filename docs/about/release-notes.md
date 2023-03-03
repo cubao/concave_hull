@@ -4,10 +4,10 @@
 
 ## Upgrading
 
-To upgrade `cubao_cmake_example` to the latest version, use pip:
+To upgrade `concave_hull` to the latest version, use pip:
 
 ```bash
-pip install -U cubao_cmake_example
+pip install -U concave_hull
 ```
 
 ## Version 0.0.2 (2023-03-03)
@@ -22,5 +22,5 @@ pip install -U cubao_cmake_example
 
 You can also checkout release on:
 
--   GitHub: <https://github.com/cubao/cmake_example/releases>
--   pypi: <https://pypi.org/project/cubao-cmake-example>
+-   GitHub: <https://github.com/cubao/concave_hull/releases>
+-   pypi: <https://pypi.org/project/concave-hull>
