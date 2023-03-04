@@ -36,5 +36,7 @@ assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
 for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
     seg = points[[f, t]]
     plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
-# plt.savefig('hull.png')
+
+plt.gca().set_aspect("equal")
+# plt.savefig('docs/hull.png')
 plt.show()
