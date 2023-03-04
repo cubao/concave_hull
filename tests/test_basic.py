@@ -195,14 +195,14 @@ def test_concave_for_wgs84():
 def write_json(path: str, data):
     path = os.path.abspath(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf8") as f:
         json.dump(data, f, indent=4)
     print(f"wrote to {path}")
 
 
 def test_handle_wgs84():
     PWD = os.path.abspath(os.path.dirname(__file__))
-    with open(f"{PWD}/../docs/data/songjiang.json") as f:
+    with open(f"{PWD}/../docs/data/songjiang.json", encoding="utf8") as f:
         data = json.load(f)
         wgs84 = np.array(data["geometry"]["coordinates"][0])
     east_north = wgs84_to_east_north(wgs84)  # to meters
