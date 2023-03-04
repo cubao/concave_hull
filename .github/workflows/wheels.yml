@@ -58,7 +58,7 @@ jobs:
         CIBW_BEFORE_BUILD: pip install numpy scipy fire --prefer-binary
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
         CIBW_SKIP: pp* *i686 *musllinux*
-        CIBW_TEST_SKIP: "*macosx* *-win_arm64 aarch64"
+        CIBW_TEST_SKIP: "*macosx* *-win_arm64 *aarch64"
 
     - name: Verify clean directory
       run: git diff --exit-code

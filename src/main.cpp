@@ -10,9 +10,6 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 #include "concaveman.h"
 
 #define STRINGIFY(x) #x
@@ -41,6 +38,10 @@ Eigen::VectorXi concave_hull_indexes(
 
 namespace py = pybind11;
 using namespace pybind11::literals;
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // based on
 // https://github.com/cubao/headers/blob/main/include/cubao/crs_transform.hpp
