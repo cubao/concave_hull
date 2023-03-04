@@ -13,11 +13,11 @@ pip install -U concave_hull
 ## Version 0.0.5 (2023-03-04)
 
 *   Add macOS, Linux arm64 release
-*   Integrate WGS84 to ENU transform
+*   Supports WGS84 data, add `is_wgs84:bool=False` parameter
 
 ## Version 0.0.4 (2023-03-03)
 
-*   Auto release to pypi.
+*   Auto release to pypi
 
 ## Version 0.0.3 (2023-03-02)
 

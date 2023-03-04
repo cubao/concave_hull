@@ -10,6 +10,7 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
+#include <cmath>
 #include "concaveman.h"
 
 #define STRINGIFY(x) #x
