@@ -5,6 +5,7 @@ from pybind11_concave_hull import __version__  # noqa
 from pybind11_concave_hull import (  # noqa
     concave_hull_indexes as concave_hull_indexes_impl,
 )
+from pybind11_concave_hull import wgs84_to_east_north
 from scipy.spatial import ConvexHull
 
 
@@ -14,6 +15,7 @@ def concave_hull_indexes(
     concavity: float = 2.0,
     length_threshold: float = 0.0,
     convex_hull_indexes: np.ndarray = None,
+    is_wgs84: bool = False,
 ):
     """
     Get concave hull indexes of points.
@@ -30,14 +32,16 @@ def concave_hull_indexes(
     """
     points = np.asarray(points, dtype=np.float64)
     points = points[:, :2]
+    if is_wgs84:
+        points = wgs84_to_east_north(points)
     if convex_hull_indexes is None:
         convex_hull = ConvexHull(points)
         convex_hull_indexes = convex_hull.vertices.astype(np.int32)
     return concave_hull_indexes_impl(
         points,
-        convex_hull_indexes=convex_hull_indexes,
         concavity=concavity,
         length_threshold=length_threshold,
+        convex_hull_indexes=convex_hull_indexes,
     )
 
 

@@ -39,6 +39,36 @@ Eigen::VectorXi concave_hull_indexes(
 namespace py = pybind11;
 using namespace pybind11::literals;
 
+// based on
+// https://github.com/cubao/headers/blob/main/include/cubao/crs_transform.hpp
+inline Eigen::Vector3d cheap_ruler_k(double latitude)
+{
+    // based on https://github.com/mapbox/cheap-ruler-cpp
+    static constexpr double RE = 6378.137;
+    static constexpr double FE = 1.0 / 298.257223563;
+    static constexpr double E2 = FE * (2 - FE);
+    static constexpr double RAD = M_PI / 180.0;
+    static constexpr double MUL = RAD * RE * 1000.;
+    double coslat = std::cos(latitude * RAD);
+    double w2 = 1 / (1 - E2 * (1 - coslat * coslat));
+    double w = std::sqrt(w2);
+    return Eigen::Vector3d(MUL * w * coslat, MUL * w * w2 * (1 - E2), 1.0);
+}
+// use first wgs84 as anchor point to scale all lon/lat coords to east/north,
+// results in meters
+inline RowVectorsNx2
+WGS84_to_EAST_NORTH(const Eigen::Ref<const RowVectorsNx2> &llas)
+{
+    Eigen::Vector2d anchor = llas.row(0);
+    auto k = cheap_ruler_k(anchor[1]);
+    RowVectorsNx2 enus = llas;
+    for (int i = 0; i < 2; ++i) {
+        enus.col(i).array() -= anchor[i];
+        enus.col(i).array() *= k[i];
+    }
+    return enus;
+}
+
 PYBIND11_MODULE(pybind11_concave_hull, m)
 {
     m.doc() = R"pbdoc(
@@ -64,6 +94,9 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
           "concavity"_a = 2.0,
           "length_threshold"_a = 0.0, //
           "documents here: https://github.com/mapbox/concaveman");
+
+    m.def("wgs84_to_east_north", &WGS84_to_EAST_NORTH, "wgs84"_a,
+          "documents here: https://github.com/mapbox/cheap-ruler");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
