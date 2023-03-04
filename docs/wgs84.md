@@ -14,9 +14,9 @@ It's waaay tooo rough. Because wgs84 are degrees in `lon~(-180,+180), lat~(-90,+
 
 And it's hard to tweat the `length_threshold` under this metric system ([CRS/SRS](https://en.wikipedia.org/wiki/Spatial_reference_system) as you may know).
 
->   You may know that 1.0 in lon/lat is about 100km, then use `0.01` (~1km) as threshold.
+>   You may know that 1.0 degree in lon/lat is about 100km, then use `0.01` (~1km) as threshold.
 >   But it's very tricky to get it right.
->   And the ratio (1 degree -> 100km) varies in lon/lat direction, and varies at differente latitude.
+>   And the ratio (1 degree -> 100km) varies in lon/lat direction, and varies at different latitude.
 
 ## concave_hull with help of mapbox/cheap-ruler
 
