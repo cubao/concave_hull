@@ -1,6 +1,6 @@
 # WGS84
 
-Handling WGS84 (longitute, latitude, used by GPS, etc) coordinates is a pretty common requirement under concave hull use cases.
+Handling WGS84 (longitude, latitude, used by GPS, etc) coordinates is a pretty common requirement under concave hull use cases.
 
 Give you an example, this is the boundary of Songjiang district, Shanghai, China（中国上海市松江区）: (click image to view in [geojson.io](https://geojson.io))
 
