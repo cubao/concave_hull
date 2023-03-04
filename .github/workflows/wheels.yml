@@ -36,20 +36,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-11]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: true
 
+    - name: Set up QEMU
+      if: runner.os == 'Linux'
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: all
+
     - uses: pypa/cibuildwheel@v2.12.0
       env:
-        CIBW_ARCHS: auto64
-        CIBW_BEFORE_BUILD: pip install numpy scipy --prefer-binary
+        # CIBW_ARCHS: auto64
+        CIBW_ARCHS_LINUX: x86_64 aarch64
+        CIBW_ARCHS_WINDOWS: AMD64 # ARM64
+        CIBW_ARCHS_MACOS: x86_64 arm64
+        CIBW_BEFORE_BUILD: pip install numpy scipy fire --prefer-binary
         # https://cibuildwheel.readthedocs.io/en/stable/options/#build-skip
         CIBW_SKIP: pp* *i686 *musllinux*
-        CIBW_TEST_SKIP: "*macosx*"
+        CIBW_TEST_SKIP: "*macosx* *win* *aarch64"
 
     - name: Verify clean directory
       run: git diff --exit-code

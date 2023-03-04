@@ -9,6 +9,7 @@ edit_uri: blob/master/docs/
 theme: readthedocs
 nav:
     - Home: index.md
+    - WGS84: wgs84.md
     - About:
         - Release Notes: about/release-notes.md
         - License: about/license.md

@@ -1,6 +1,9 @@
+import json
+import os
+
 import numpy as np
 
-from concave_hull import concave_hull, concave_hull_indexes
+from concave_hull import concave_hull, concave_hull_indexes, wgs84_to_east_north
 
 
 # see ../test.py for testing data
@@ -182,3 +185,67 @@ def test_concave_hull_api():
     hull_points = concave_hull(tuple(all_points.tolist()))
     assert isinstance(hull_points, list)
     assert len(hull_points) == 57
+
+
+def test_concave_for_wgs84():
+    # https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdata%2Fsongjiang.json
+    pass
+
+
+def write_json(path: str, data):
+    path = os.path.abspath(path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf8") as f:
+        json.dump(data, f, indent=4)
+    print(f"wrote to {path}")
+
+
+def test_handle_wgs84():
+    PWD = os.path.abspath(os.path.dirname(__file__))
+    with open(f"{PWD}/../docs/data/songjiang.json", encoding="utf8") as f:
+        data = json.load(f)
+        wgs84 = np.array(data["geometry"]["coordinates"][0])
+    east_north = wgs84_to_east_north(wgs84)  # to meters
+    assert (
+        np.linalg.norm(east_north.max(axis=0) - [32706.73422749, 24204.0419051]) < 1e-3
+    )
+
+    export_dir = None  # f'{PWD}/../docs/data'
+    features = []
+    for is_wgs84 in [False, True]:
+        for thresh in [10.0, 100.0, 1000.0, 5000.0, 10000.0]:
+            wgs84_hull = concave_hull(wgs84, length_threshold=thresh, is_wgs84=is_wgs84)
+            wgs84_hull = wgs84_hull.tolist()
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[*wgs84_hull, wgs84_hull[0]]],  # as polygon
+                    },
+                    "properties": {
+                        "is_wgs84": is_wgs84,
+                        "length_threshold": thresh,
+                        "#origin_points": len(wgs84),
+                        "#concave_bounds": len(wgs84_hull),
+                    },
+                }
+            )
+            if export_dir:
+                path = f'{export_dir}/concave_hull_thresh_{thresh}_{"wgs84" if is_wgs84 else "xy"}.json'
+                write_json(path, features[-1])
+
+    if export_dir:
+        write_json(
+            f"{export_dir}/concave_hull.json",
+            {
+                "type": "FeatureCollection",
+                "features": features,
+            },
+        )
+
+    ret0 = concave_hull(wgs84, length_threshold=50.0)
+    ret1 = concave_hull(wgs84, length_threshold=50.0, is_wgs84=False)
+    ret2 = concave_hull(wgs84, length_threshold=50.0, is_wgs84=True)
+    assert len(ret0) == len(ret1)
+    assert len(ret0) < len(ret2)
