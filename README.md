@@ -9,12 +9,14 @@ Credits goes to:
 -   <https://github.com/mapbox/concaveman>
 -   <https://github.com/sadaszewski/concaveman-cpp>
 
+Online document: <https://concave-hull.readthedocs.io/en/latest/>
+
 ## Install
 
 ### via pip
 
 ```bash
-pip install concave_hull
+pip install -U concave_hull
 ```
 
 ### from source
@@ -37,6 +39,9 @@ pip install git+https://github.com/cubao/concave_hull.git
 Signature:
 
 ```python
+# import
+from concave_hull import concave_hull, concave_hull_indexes
+
 # get concave hull indexes
 concave_hull_indexes(
        points: Union[numpy.ndarray, List, Tuple],
