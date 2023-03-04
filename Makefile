@@ -43,7 +43,7 @@ python_test:
 docs_build:
 	mkdocs build
 docs_serve:
-	mkdocs serve
+	mkdocs serve -a 0.0.0.0:8088
 
 # conda create -y -n py36 python=3.6
 # conda create -y -n py37 python=3.7

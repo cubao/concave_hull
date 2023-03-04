@@ -200,9 +200,9 @@ def write_json(path: str, data):
     print(f"wrote to {path}")
 
 
-def handle_wgs84():
+def test_handle_wgs84():
     PWD = os.path.abspath(os.path.dirname(__file__))
-    with open(f"{PWD}/../data/songjiang.json") as f:
+    with open(f"{PWD}/../docs/data/songjiang.json") as f:
         data = json.load(f)
         wgs84 = np.array(data["geometry"]["coordinates"][0])
     east_north = wgs84_to_east_north(wgs84)  # to meters
