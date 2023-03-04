@@ -12,7 +12,7 @@ Released as a python package for easy integration. All credits goes to:
 ### via pip
 
 ```bash
-pip install concave_hull
+pip install -U concave_hull
 ```
 
 ### from source

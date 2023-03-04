@@ -1,10 +1,10 @@
 # WGS84
 
-Handling WGS84 (longitute, latitude) coordinates is a pretty common requirement under concave hull use cases.
+Handling WGS84 (longitute, latitude, used by GPS, etc) coordinates is a pretty common requirement under concave hull use cases.
 
 Give you an example, this is the boundary of Songjiang district, Shanghai, China（中国上海市松江区）: (click image to view in [geojson.io](https://geojson.io))
 
-[![](data/songjiang.png)](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdocs%2Fdata%2Fsongjiang.json)
+[![](data/songjiang.png)](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fsongjiang.json)
 
 If you directly pass `[[lon, lat], ...]` to `concave_hull` algorithm, you get something like this:
 
@@ -31,15 +31,16 @@ hull = concave_hull(lon_lats, length_threshold=thresh, is_wgs84=True)
 
 | `length_threshold` | Screenshot | View in geojson.io |
 | ---: | :--- | :--- |
-| 10m | ![](data/thresh_10_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_10.0_wgs84.json) |
-| 100m | ![](data/thresh_100_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_100.0_wgs84.json) |
-| 1,000m | ![](data/thresh_1000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_1000.0_wgs84.json) |
-| 5,000m | ![](data/thresh_5000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_5000.0_wgs84.json) |
-| 10,000m | ![](data/thresh_10000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fgithub.com%2Fcubao%2Fconcave_hull%2Fraw%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_10000.0_wgs84.json) |
+| 10m | ![](data/thresh_10_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_10.0_wgs84.json) |
+| 100m | ![](data/thresh_100_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_100.0_wgs84.json) |
+| 1,000m | ![](data/thresh_1000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_1000.0_wgs84.json) |
+| 5,000m | ![](data/thresh_5000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_5000.0_wgs84.json) |
+| 10,000m | ![](data/thresh_10000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_10000.0_wgs84.json) |
 
 ## other CRS/SRS?
 
-For other CRS/SRS, you need to manually convert it to some cartesian coordinates,
+For other CRS/SRS, you need to manually convert it to some cartesian coordinates
+with know metric (e.g. unit `1` is `1 meter` in reality), then:
 
 -   use `concave_hull_indexes(cartesian_coords, ...)` to get `indexes`, then
 -   use `original_coords[indexes]` to get desired concave hull

@@ -9,12 +9,14 @@ Credits goes to:
 -   <https://github.com/mapbox/concaveman>
 -   <https://github.com/sadaszewski/concaveman-cpp>
 
+Online document: <https://concave-hull.readthedocs.io/en/latest/>
+
 ## Install
 
 ### via pip
 
 ```bash
-pip install concave_hull
+pip install -U concave_hull
 ```
 
 ### from source
