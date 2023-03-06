@@ -37,6 +37,15 @@ hull = concave_hull(lon_lats, length_threshold=thresh, is_wgs84=True)
 | 5,000m | ![](data/thresh_5000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_5000.0_wgs84.json) |
 | 10,000m | ![](data/thresh_10000_wgs84.png) | [link](https://geojson.io/#data=data:text/x-url,https%3A%2F%2Fraw.githubusercontent.com%2Fcubao%2Fconcave_hull%2Fmaster%2Fdocs%2Fdata%2Fconcave_hull_thresh_10000.0_wgs84.json) |
 
+## Interactive demo
+
+And there is a jupyter notebook:
+
+-   GitHub: <https://github.com/cubao/index/blob/master/docs/notebooks/concave-hull.ipynb>
+-   readthedocs: <https://cubao.readthedocs.io/en/latest/notebooks/concave-hull/>
+
+![](concave-hull.gif)
+
 ## other CRS/SRS?
 
 For other CRS/SRS, you need to manually convert it to some cartesian coordinates
