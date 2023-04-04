@@ -38,5 +38,5 @@ for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
     plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
 
 plt.gca().set_aspect("equal")
-# plt.savefig('docs/hull.png')
-plt.show()
+plt.savefig("docs/hull.png")
+# plt.show()

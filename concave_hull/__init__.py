@@ -3,11 +3,11 @@ from typing import List, Tuple, Union
 import numpy as np
 import pybind11_concave_hull  # noqa
 from pybind11_concave_hull import __version__  # noqa
+from pybind11_concave_hull import wgs84_to_east_north  # noqa
 from pybind11_concave_hull import (  # noqa
     concave_hull_indexes as concave_hull_indexes_impl,
 )
-from pybind11_concave_hull import convex_hull_indexes, wgs84_to_east_north  # noqa
-from scipy.spatial import ConvexHull
+from pybind11_concave_hull import convex_hull_indexes as convex_hull_indexes_impl
 
 
 def concave_hull_indexes(
@@ -36,8 +36,7 @@ def concave_hull_indexes(
     if is_wgs84:
         points = wgs84_to_east_north(points)
     if convex_hull_indexes is None:
-        convex_hull = ConvexHull(points)
-        convex_hull_indexes = convex_hull.vertices.astype(np.int32)
+        convex_hull_indexes = convex_hull_indexes_impl(points)
     return concave_hull_indexes_impl(
         points,
         concavity=concavity,
@@ -48,6 +47,20 @@ def concave_hull_indexes(
 
 def concave_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
     indexes = concave_hull_indexes(points, *args, **kwargs)
+    return (
+        points[indexes]
+        if isinstance(points, np.ndarray)
+        else [points[i] for i in indexes]
+    )
+
+
+def convex_hull_indexes(points: Union[np.ndarray, List, Tuple]):
+    points = np.asarray(points, dtype=np.float64)
+    return convex_hull_indexes_impl(points[:, :2])
+
+
+def convex_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
+    indexes = convex_hull_indexes(points, *args, **kwargs)
     return (
         points[indexes]
         if isinstance(points, np.ndarray)
