@@ -238,6 +238,21 @@ def test_convex_hull():
     assert normalize_indexes(indexes3) == [0, 2, 4, 6]
 
 
+def test_convex_hull_random():
+    from scipy.spatial import ConvexHull
+
+    for _ in range(20):
+        N = np.random.randint(400, 900)
+        xys = np.random.random((N, 2))
+        convex_hull = ConvexHull(xys)
+        idx1 = convex_hull.vertices.astype(np.int32)
+        idx2 = convex_hull_indexes(xys, include_collinear=True)
+        idx1, idx2 = (normalize_indexes(i) for i in [idx1, idx2])
+        print(idx1)
+        print(idx2)
+        assert len(idx1) == len(idx2)
+
+
 def test_handle_wgs84():
     PWD = os.path.abspath(os.path.dirname(__file__))
     with open(f"{PWD}/../docs/data/songjiang.json", encoding="utf8") as f:

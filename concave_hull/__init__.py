@@ -54,9 +54,9 @@ def concave_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
     )
 
 
-def convex_hull_indexes(points: Union[np.ndarray, List, Tuple]):
+def convex_hull_indexes(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
     points = np.asarray(points, dtype=np.float64)
-    return convex_hull_indexes_impl(points[:, :2])
+    return convex_hull_indexes_impl(points[:, :2], *args, **kwargs)
 
 
 def convex_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
