@@ -1,11 +1,12 @@
 from typing import List, Tuple, Union
 
 import numpy as np
+import pybind11_concave_hull  # noqa
 from pybind11_concave_hull import __version__  # noqa
 from pybind11_concave_hull import (  # noqa
     concave_hull_indexes as concave_hull_indexes_impl,
 )
-from pybind11_concave_hull import wgs84_to_east_north
+from pybind11_concave_hull import convex_hull_indexes, wgs84_to_east_north  # noqa
 from scipy.spatial import ConvexHull
 
 
@@ -14,7 +15,7 @@ def concave_hull_indexes(
     *,
     concavity: float = 2.0,
     length_threshold: float = 0.0,
-    convex_hull_indexes: np.ndarray = None,
+    convex_hull_indexes: np.ndarray = None,  # noqa
     is_wgs84: bool = False,
 ):
     """

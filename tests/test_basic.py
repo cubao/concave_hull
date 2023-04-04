@@ -1,9 +1,15 @@
 import json
 import os
+import sys
 
 import numpy as np
 
-from concave_hull import concave_hull, concave_hull_indexes, wgs84_to_east_north
+from concave_hull import (
+    concave_hull,
+    concave_hull_indexes,
+    convex_hull_indexes,
+    wgs84_to_east_north,
+)
 
 
 # see ../test.py for testing data
@@ -200,6 +206,34 @@ def write_json(path: str, data):
     print(f"wrote to {path}")
 
 
+def normalize_indexes(index):
+    index = list(index)
+    anchor = index.index(min(index))
+    return [*index[anchor:], *index[:anchor]]
+
+
+def test_convex_hull():
+    points = [
+        [0, 0],
+        [0.5, 0.5],
+        [1, 0],
+        [0.3, 0.6],
+        [1, 1],
+        [0.1, 0.7],
+        [0, 1],
+    ]
+    indexes1 = convex_hull_indexes(points)
+    assert normalize_indexes(indexes1) == [0, 2, 4, 6]
+
+    points = np.array(points)
+    indexes2 = convex_hull_indexes(points)
+    assert normalize_indexes(indexes2) == [0, 2, 4, 6]
+    assert points[indexes1].shape == (4, 2)
+
+    indexes3 = concave_hull_indexes(points, length_threshold=2.0)
+    assert normalize_indexes(indexes3) == [0, 2, 4, 6]
+
+
 def test_handle_wgs84():
     PWD = os.path.abspath(os.path.dirname(__file__))
     with open(f"{PWD}/../docs/data/songjiang.json", encoding="utf8") as f:
@@ -249,3 +283,27 @@ def test_handle_wgs84():
     ret2 = concave_hull(wgs84, length_threshold=50.0, is_wgs84=True)
     assert len(ret0) == len(ret1)
     assert len(ret0) < len(ret2)
+
+
+def pytest_main(dir: str, *, test_file: str = None):
+    import pytest
+
+    os.chdir(dir)
+    sys.exit(
+        pytest.main(
+            [
+                dir,
+                *(["-k", test_file] if test_file else []),
+                "--capture",
+                "tee-sys",
+                "-vv",
+                "-x",
+            ]
+        )
+    )
+
+
+if __name__ == "__main__":
+    np.set_printoptions(suppress=True)
+    pwd = os.path.abspath(os.path.dirname(__file__))
+    pytest_main(pwd, test_file=os.path.basename(__file__))

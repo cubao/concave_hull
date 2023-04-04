@@ -87,6 +87,8 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         }
         st.push_back(index[i]);
     }
+    // ccw like in geojson
+    std::reverse(st.begin(), st.end());
     return Eigen::VectorXi::Map(&st[0], st.size());
 }
 

@@ -83,14 +83,7 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
         credits:
             -   https://github.com/mapbox/concaveman
             -   https://github.com/sadaszewski/concaveman-cpp
-
-        .. currentmodule:: concave_hull
-
-        .. autosummary::
-           :toctree: _generate
-
-           rdp
-           rdp_mask
+            -   https://cp-algorithms.com/geometry/convex-hull.html#implementation
     )pbdoc";
 
     m.def("concave_hull_indexes", &concave_hull_indexes, "points"_a,
