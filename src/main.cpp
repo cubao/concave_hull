@@ -10,6 +10,7 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
+#include "convex_hull.hpp"
 #include "concaveman.h"
 
 #define STRINGIFY(x) #x
@@ -101,6 +102,9 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
 
     m.def("wgs84_to_east_north", &WGS84_to_EAST_NORTH, "wgs84"_a,
           "documents here: https://github.com/mapbox/cheap-ruler");
+
+    m.def("convex_hull_indexes", &cubao::convex_hull::convex_hull_indexes,
+          "points"_a, py::kw_only(), "include_collinear"_a = false);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
