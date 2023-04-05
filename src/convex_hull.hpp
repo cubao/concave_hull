@@ -55,7 +55,8 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
     const int N = points.rows();
     Eigen::Vector2d p0(points(0, 0), points(0, 1));
     for (int i = 1; i < N; ++i) {
-        if (points(i, 1) <= p0[1] && points(i, 0) < p0[0]) {
+        if (points(i, 1) < p0[1] ||
+            (points(i, 1) == p0[1] && points(i, 0) < p0[0])) {
             p0[0] = points(i, 0);
             p0[1] = points(i, 1);
         }
@@ -76,13 +77,14 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
                collinear(p0, points.row(index[i]), points.row(index.back()))) {
             i--;
         }
-        reverse(index.begin() + i + 1, index.end());
+        std::reverse(index.begin() + i + 1, index.end());
     }
     std::vector<int> st;
     for (int i = 0; i < N; i++) {
-        while (st.size() > 1 &&
-               !cw(points.row(st[st.size() - 2]), points.row(st.back()),
-                   points.row(index[i]), include_collinear)) {
+        while (st.size() > 1 && !cw(points.row(st[st.size() - 2]), //
+                                    points.row(st.back()),         //
+                                    points.row(index[i]),          //
+                                    include_collinear)) {
             st.pop_back();
         }
         st.push_back(index[i]);
