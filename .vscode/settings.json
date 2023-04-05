@@ -94,7 +94,8 @@
         "slist": "cpp",
         "future": "cpp",
         "regex": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "specialfunctions": "cpp"
     },
     "workbench.colorCustomizations": {
         "activityBar.background": "#143328",

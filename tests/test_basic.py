@@ -1,9 +1,26 @@
 import json
 import os
+import sys
+import time
 
 import numpy as np
 
-from concave_hull import concave_hull, concave_hull_indexes, wgs84_to_east_north
+from concave_hull import (
+    clockwise,
+    colinear,
+    concave_hull,
+    concave_hull_indexes,
+    convex_hull_indexes,
+    convex_hull_indexes_impl,
+    orientation,
+    wgs84_to_east_north,
+)
+
+
+def normalize_indexes(index):
+    index = list(index)
+    anchor = index.index(min(index))
+    return [*index[anchor:], *index[:anchor]]
 
 
 # see ../test.py for testing data
@@ -26,105 +43,109 @@ def __convex_hull_indexes():
 
 
 def __concave_hull_indexes():
-    return [
-        205,
-        206,
-        208,
-        207,
-        203,
-        197,
-        190,
-        182,
-        174,
-        165,
-        156,
-        147,
-        129,
-        130,
-        131,
-        132,
-        133,
-        134,
-        135,
-        136,
-        137,
-        138,
-        119,
-        101,
-        83,
-        65,
-        49,
-        33,
-        19,
-        18,
-        7,
-        6,
-        5,
-        4,
-        3,
-        2,
-        1,
-        0,
-        9,
-        8,
-        20,
-        34,
-        50,
-        66,
-        84,
-        102,
-        120,
-        139,
-        148,
-        157,
-        166,
-        175,
-        183,
-        191,
-        198,
-        199,
-        204,
-    ]  # noqa
+    return normalize_indexes(
+        [
+            205,
+            206,
+            208,
+            207,
+            203,
+            197,
+            190,
+            182,
+            174,
+            165,
+            156,
+            147,
+            129,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            119,
+            101,
+            83,
+            65,
+            49,
+            33,
+            19,
+            18,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1,
+            0,
+            9,
+            8,
+            20,
+            34,
+            50,
+            66,
+            84,
+            102,
+            120,
+            139,
+            148,
+            157,
+            166,
+            175,
+            183,
+            191,
+            198,
+            199,
+            204,
+        ]
+    )  # noqa
 
 
 def __concave_hull_indexes_thresh50():
-    return [
-        208,
-        207,
-        203,
-        197,
-        190,
-        182,
-        174,
-        165,
-        156,
-        130,
-        131,
-        132,
-        133,
-        134,
-        135,
-        136,
-        137,
-        138,
-        83,
-        49,
-        19,
-        7,
-        5,
-        2,
-        1,
-        0,
-        8,
-        34,
-        66,
-        120,
-        139,
-        166,
-        183,
-        198,
-        204,
-    ]
+    return normalize_indexes(
+        [
+            208,
+            207,
+            203,
+            197,
+            190,
+            182,
+            174,
+            165,
+            156,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            83,
+            49,
+            19,
+            7,
+            5,
+            2,
+            1,
+            0,
+            8,
+            34,
+            66,
+            120,
+            139,
+            166,
+            183,
+            198,
+            204,
+        ]
+    )
 
 
 def __test_concave_hull(points):
@@ -133,19 +154,19 @@ def __test_concave_hull(points):
         points,
         convex_hull_indexes=convex_hull,
     )
-    assert np.all(idxes == __concave_hull_indexes())
+    assert np.all(normalize_indexes(idxes) == __concave_hull_indexes())
 
     idxes = concave_hull_indexes(points)  # integrated convex hull
-    assert np.all(idxes == __concave_hull_indexes())
+    assert np.all(normalize_indexes(idxes) == __concave_hull_indexes())
 
     idxes = concave_hull_indexes(
         points,
         convex_hull_indexes=convex_hull,
         length_threshold=50,
     )
-    assert np.all(idxes == __concave_hull_indexes_thresh50())
+    assert np.all(normalize_indexes(idxes) == __concave_hull_indexes_thresh50())
     idxes = concave_hull_indexes(points, length_threshold=50)
-    assert np.all(idxes == __concave_hull_indexes_thresh50())
+    assert np.all(normalize_indexes(idxes) == __concave_hull_indexes_thresh50())
 
 
 def test_concave_hull_np_array():
@@ -200,6 +221,104 @@ def write_json(path: str, data):
     print(f"wrote to {path}")
 
 
+def test_convex_hull_debug():
+    """
+    4  8  3
+    6  5  9
+    1 0 7 2
+    """
+    points = [
+        [1, 0],
+        [0, 0],
+        [3, 0],
+        [3, 3],
+        [0, 3],
+        [1.5, 1.5],
+        [0, 1.5],
+        [2, 0],
+        [1.5, 3],
+        [3, 1.5],
+    ]
+    index = convex_hull_indexes(points, order_only=True)
+    assert list(index) == [1, 6, 4, 8, 5, 3, 9, 0, 7, 2]
+    index = convex_hull_indexes(points, order_only=True, include_colinear=True)
+    assert list(index) == [1, 6, 4, 8, 5, 3, 9, 2, 7, 0]
+    index = convex_hull_indexes(points)
+    assert list(index) == [2, 3, 4, 1]
+    index = convex_hull_indexes(points, include_colinear=True)
+    assert list(index) == [0, 7, 2, 9, 3, 8, 4, 6, 1]
+
+
+def test_convex_hull():
+    points = [
+        [0, 0],
+        [0.5, 0.5],
+        [1, 0],
+        [0.3, 0.6],
+        [1, 1],
+        [0.1, 0.7],
+        [0, 1],
+    ]
+    indexes1 = convex_hull_indexes(points)
+    assert normalize_indexes(indexes1) == [0, 2, 4, 6]
+
+    points = np.array(points)
+    indexes2 = convex_hull_indexes(points)
+    assert normalize_indexes(indexes2) == [0, 2, 4, 6]
+    assert points[indexes1].shape == (4, 2)
+
+    indexes3 = concave_hull_indexes(points, length_threshold=2.0)
+    assert normalize_indexes(indexes3) == [0, 2, 4, 6]
+
+
+def test_colinear():
+    assert clockwise([0, 0], [1, 1], [2, 1])
+    assert not clockwise([0, 0], [1, 1], [2, 3])
+
+    assert colinear([0, 0], [1, 1], [2, 2])
+    assert not colinear([0, 0], [1, 1], [2, 2 + 1e-9])
+
+    assert not clockwise([0, 0], [1, 1], [2, 2])
+    assert not clockwise([0, 0], [1, 1], [2, 2], include_colinear=False)
+    assert clockwise([0, 0], [1, 1], [2, 2], include_colinear=True)
+
+    assert 0 == orientation([0, 0], [1, 1], [2, 2])
+    assert 1 == orientation([0, 0], [1, 1], [2, 3])
+    assert -1 == orientation([0, 0], [1, 1], [2, 1])
+
+
+def test_convex_hull_random():
+    from scipy.spatial import ConvexHull
+
+    time_cubao, time_cubao_impl, time_scipy = 0.0, 0.0, 0.0
+    for _ in range(100):
+        N = np.random.randint(400, 900)
+        rand = np.random.random((N, 2))
+        xys1 = np.copy(rand)
+        xys2 = np.r_[rand, rand + [0.5, 0.0]]
+        for xys in [xys1, xys2]:
+            # scipy
+            tick = time.time()
+            convex_hull = ConvexHull(xys)
+            idx1 = convex_hull.vertices
+            time_scipy += time.time() - tick
+            idx1 = idx1.astype(np.int32)
+            # cubao
+            tick = time.time()
+            idx2 = convex_hull_indexes(xys)
+            time_cubao += time.time() - tick
+            # assert equal
+            idx1, idx2 = (normalize_indexes(i) for i in [idx1, idx2])
+            assert idx1 == idx2
+            # cubao c++ direct call
+            tick = time.time()
+            idx2 = convex_hull_indexes_impl(xys)
+            time_cubao_impl += time.time() - tick
+    print(f"speed up: x{time_scipy / time_cubao:.3f}")
+    print(f"speed up: x{time_scipy / time_cubao_impl:.3f} (impl)")
+    assert time_cubao < time_scipy
+
+
 def test_handle_wgs84():
     PWD = os.path.abspath(os.path.dirname(__file__))
     with open(f"{PWD}/../docs/data/songjiang.json", encoding="utf8") as f:
@@ -249,3 +368,27 @@ def test_handle_wgs84():
     ret2 = concave_hull(wgs84, length_threshold=50.0, is_wgs84=True)
     assert len(ret0) == len(ret1)
     assert len(ret0) < len(ret2)
+
+
+def pytest_main(dir: str, *, test_file: str = None):
+    import pytest
+
+    os.chdir(dir)
+    sys.exit(
+        pytest.main(
+            [
+                dir,
+                *(["-k", test_file] if test_file else []),
+                "--capture",
+                "tee-sys",
+                "-vv",
+                "-x",
+            ]
+        )
+    )
+
+
+if __name__ == "__main__":
+    np.set_printoptions(suppress=True)
+    pwd = os.path.abspath(os.path.dirname(__file__))
+    pytest_main(pwd, test_file=os.path.basename(__file__))

@@ -9,9 +9,11 @@ edit_uri: blob/master/docs/
 theme: readthedocs
 nav:
   - Home: index.md
+  - Usage: usage.md
   - WGS84: wgs84.md
   - About:
       - Release Notes: about/release-notes.md
       - License: about/license.md
-
+plugins:
+  - include-markdown
 copyright: Copyright &copy; 2023 <a href="https://cubao.readthedocs.io/">cubao team</a>.

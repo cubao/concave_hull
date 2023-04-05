@@ -11,6 +11,8 @@ Credits goes to:
 
 Online document: <https://concave-hull.readthedocs.io/en/latest/>
 
+<!--intro-start-->
+
 ## Install
 
 ### via pip
@@ -48,14 +50,18 @@ concave_hull_indexes(
        *,
        concavity: float = 2.0,
        length_threshold: float = 0.0,
-       convex_hull_indexes: numpy.ndarray[numpy.int32[m, 1]] = None, # will use integrated scipy ConvexHull if None
+       # you can just ignore "convex_hull_indexes"
+       convex_hull_indexes: numpy.ndarray[numpy.int32[m, 1]] = None,
 ) -> numpy.ndarray[numpy.int32[m, 1]]
 
 # get concave hull points
 concave_hull(
        points: Union[numpy.ndarray, List, Tuple],
-       *args, *kwargs # will proxy all to covcave_hull_indexes
+       ... # same as
 ) -> Union[numpy.ndarray, List, Tuple]
+
+# P.S., we provide convex_hull (Graham scan)
+from concave_hull import convex_hull, convex_hull_indexes
 ```
 
 -   `concavity` is a relative measure of concavity. 1 results in a relatively
@@ -98,9 +104,6 @@ for simplex in convex_hull.simplices:
 idxes = concave_hull_indexes(
     points[:, :2],
     length_threshold=50,
-    # for concave_hull>=0.0.3
-    #   it's not necessary to provide convex_hull_indexes
-    # convex_hull_indexes=convex_hull.vertices.astype(np.int32),
 )
 # you can get coordinates by `points[idxes]`
 assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
@@ -111,6 +114,8 @@ for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
 # plt.savefig('hull.png')
 plt.show()
 ```
+
+<!--intro-end-->
 
 ## Tests
 

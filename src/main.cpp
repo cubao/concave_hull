@@ -10,6 +10,7 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
+#include "convex_hull.hpp"
 #include "concaveman.h"
 
 #define STRINGIFY(x) #x
@@ -82,14 +83,7 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
         credits:
             -   https://github.com/mapbox/concaveman
             -   https://github.com/sadaszewski/concaveman-cpp
-
-        .. currentmodule:: concave_hull
-
-        .. autosummary::
-           :toctree: _generate
-
-           rdp
-           rdp_mask
+            -   https://cp-algorithms.com/geometry/convex-hull.html#implementation
     )pbdoc";
 
     m.def("concave_hull_indexes", &concave_hull_indexes, "points"_a,
@@ -101,6 +95,22 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
 
     m.def("wgs84_to_east_north", &WGS84_to_EAST_NORTH, "wgs84"_a,
           "documents here: https://github.com/mapbox/cheap-ruler");
+
+    m.def("convex_hull_indexes", &cubao::convex_hull::convex_hull_indexes,
+          "points"_a,                   //
+          py::kw_only(),                //
+          "include_colinear"_a = false, //
+          "order_only"_a = false)
+        .def("orientation", &cubao::convex_hull::orientation, //
+             "prev"_a, "curr"_a, "next"_a)
+        .def("clockwise", &cubao::convex_hull::cw, //
+             "prev"_a, "curr"_a, "next"_a,         //
+             py::kw_only(),                        //
+             "include_colinear"_a = false)
+        .def("colinear", &cubao::convex_hull::colinear, //
+             "prev"_a, "curr"_a, "next"_a)
+        //
+        ;
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

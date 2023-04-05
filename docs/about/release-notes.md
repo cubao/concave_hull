@@ -10,6 +10,10 @@ To upgrade `concave_hull` to the latest version, use pip:
 pip install -U concave_hull
 ```
 
+## Version 0.0.6 (2023-04-05)
+
+*   Integrate Grahams-Scan algorithm, drop scipy dependency
+
 ## Version 0.0.5 (2023-03-04)
 
 *   Add macOS, Linux arm64 release
