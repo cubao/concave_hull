@@ -18,6 +18,7 @@ inline int orientation(const Eigen::Vector2d &a, //
                        const Eigen::Vector2d &b, //
                        const Eigen::Vector2d &c)
 {
+    // np.sign(np.cross(a->b, a->c)[2])
     double v =
         a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
     if (v < 0)
@@ -50,7 +51,8 @@ inline double squaredNorm(const Eigen::Vector2d &a, const Eigen::Vector2d &b)
 
 inline Eigen::VectorXi
 convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
-                    bool include_colinear = false)
+                    bool include_colinear = false, //
+                    bool order_only = false)
 {
     const int N = points.rows();
     Eigen::Vector2d p0(points(0, 0), points(0, 1));
@@ -79,6 +81,9 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         }
         std::reverse(index.begin() + i + 1, index.end());
     }
+    if (order_only) {
+        return Eigen::VectorXi::Map(&index[0], index.size());
+    }
     std::vector<int> st;
     for (int i = 0; i < N; i++) {
         while (st.size() > 1 && !cw(points.row(st[st.size() - 2]), //
@@ -89,7 +94,7 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         }
         st.push_back(index[i]);
     }
-    // ccw like in geojson
+    // in ccw orientation
     std::reverse(st.begin(), st.end());
     return Eigen::VectorXi::Map(&st[0], st.size());
 }

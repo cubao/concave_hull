@@ -219,6 +219,32 @@ def write_json(path: str, data):
     print(f"wrote to {path}")
 
 
+def test_convex_hull_debug():
+    """
+    4     3
+    6  5
+    1 0 7 2
+    """
+    points = [
+        [1, 0],
+        [0, 0],
+        [3, 0],
+        [3, 3],
+        [0, 3],
+        [1.5, 1.5],
+        [0, 1.5],
+        [2, 0],
+    ]
+    index = convex_hull_indexes(points, order_only=True)
+    assert list(index) == [1, 6, 4, 5, 3, 0, 7, 2]
+    index = convex_hull_indexes(points, order_only=True, include_colinear=True)
+    assert list(index) == [1, 6, 4, 5, 3, 2, 7, 0]
+    index = convex_hull_indexes(points)
+    assert list(index) == [2, 3, 4, 1]
+    index = convex_hull_indexes(points, include_colinear=True)
+    assert list(index) == [0, 7, 2, 3, 4, 6, 1]
+
+
 def test_convex_hull():
     points = [
         [0, 0],
@@ -242,13 +268,19 @@ def test_convex_hull():
 
 
 def test_colinear():
+    assert clockwise([0, 0], [1, 1], [2, 1])
+    assert not clockwise([0, 0], [1, 1], [2, 3])
+
     assert colinear([0, 0], [1, 1], [2, 2])
     assert not colinear([0, 0], [1, 1], [2, 2 + 1e-9])
 
+    assert not clockwise([0, 0], [1, 1], [2, 2])
     assert not clockwise([0, 0], [1, 1], [2, 2], include_colinear=False)
     assert clockwise([0, 0], [1, 1], [2, 2], include_colinear=True)
 
-    pass
+    assert 0 == orientation([0, 0], [1, 1], [2, 2])
+    assert 1 == orientation([0, 0], [1, 1], [2, 3])
+    assert -1 == orientation([0, 0], [1, 1], [2, 1])
 
 
 def test_convex_hull_random():
@@ -336,7 +368,7 @@ def pytest_main(dir: str, *, test_file: str = None):
 
 
 if __name__ == "__main__":
-    test_colinear()
+    test_convex_hull_debug()
     raise Exception()
     np.set_printoptions(suppress=True)
     pwd = os.path.abspath(os.path.dirname(__file__))
