@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import time
 
 import numpy as np
 
@@ -221,8 +222,8 @@ def write_json(path: str, data):
 
 def test_convex_hull_debug():
     """
-    4     3
-    6  5
+    4  8  3
+    6  5  9
     1 0 7 2
     """
     points = [
@@ -234,15 +235,17 @@ def test_convex_hull_debug():
         [1.5, 1.5],
         [0, 1.5],
         [2, 0],
+        [1.5, 3],
+        [3, 1.5],
     ]
     index = convex_hull_indexes(points, order_only=True)
-    assert list(index) == [1, 6, 4, 5, 3, 0, 7, 2]
+    assert list(index) == [1, 6, 4, 8, 5, 3, 9, 0, 7, 2]
     index = convex_hull_indexes(points, order_only=True, include_colinear=True)
-    assert list(index) == [1, 6, 4, 5, 3, 2, 7, 0]
+    assert list(index) == [1, 6, 4, 8, 5, 3, 9, 2, 7, 0]
     index = convex_hull_indexes(points)
     assert list(index) == [2, 3, 4, 1]
     index = convex_hull_indexes(points, include_colinear=True)
-    assert list(index) == [0, 7, 2, 3, 4, 6, 1]
+    assert list(index) == [0, 7, 2, 9, 3, 8, 4, 6, 1]
 
 
 def test_convex_hull():
@@ -286,16 +289,28 @@ def test_colinear():
 def test_convex_hull_random():
     from scipy.spatial import ConvexHull
 
-    for _ in range(20):
+    time_cubao, time_scipy = 0.0, 0.0
+    for _ in range(100):
         N = np.random.randint(400, 900)
-        xys = np.random.random((N, 2))
-        convex_hull = ConvexHull(xys)
-        idx1 = convex_hull.vertices.astype(np.int32)
-        idx2 = convex_hull_indexes(xys, include_colinear=True)
-        idx1, idx2 = (normalize_indexes(i) for i in [idx1, idx2])
-        print(idx1)
-        print(idx2)
-        assert len(idx1) == len(idx2)
+        rand = np.random.random((N, 2))
+        xys1 = np.copy(rand)
+        xys2 = np.r_[rand, rand + [0.5, 0.0]]
+        for xys in [xys1, xys2]:
+            # scipy
+            tick = time.time()
+            convex_hull = ConvexHull(xys)
+            idx1 = convex_hull.vertices
+            time_scipy += time.time() - tick
+            idx1 = idx1.astype(np.int32)
+            # cubao
+            tick = time.time()
+            idx2 = convex_hull_indexes(xys)
+            time_cubao += time.time() - tick
+            # assert equal
+            idx1, idx2 = (normalize_indexes(i) for i in [idx1, idx2])
+            assert idx1 == idx2
+    print(f"speed up: x{time_scipy / time_cubao:.2f}")
+    assert time_cubao < time_scipy
 
 
 def test_handle_wgs84():
@@ -368,8 +383,6 @@ def pytest_main(dir: str, *, test_file: str = None):
 
 
 if __name__ == "__main__":
-    test_convex_hull_debug()
-    raise Exception()
     np.set_printoptions(suppress=True)
     pwd = os.path.abspath(os.path.dirname(__file__))
     pytest_main(pwd, test_file=os.path.basename(__file__))

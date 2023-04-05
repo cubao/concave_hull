@@ -106,7 +106,7 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
         .def("clockwise", &cubao::convex_hull::cw, //
              "prev"_a, "curr"_a, "next"_a,         //
              py::kw_only(),                        //
-             "include_colinear"_a = true)
+             "include_colinear"_a = false)
         .def("colinear", &cubao::convex_hull::colinear, //
              "prev"_a, "curr"_a, "next"_a)
         //
