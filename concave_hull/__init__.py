@@ -46,8 +46,21 @@ def concave_hull_indexes(
     )
 
 
-def concave_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
-    indexes = concave_hull_indexes(points, *args, **kwargs)
+def concave_hull(
+    points: Union[np.ndarray, List, Tuple],
+    *,
+    concavity: float = 2.0,
+    length_threshold: float = 0.0,
+    convex_hull_indexes: np.ndarray = None,  # noqa
+    is_wgs84: bool = False,
+):
+    indexes = concave_hull_indexes(
+        points,
+        concavity=concavity,
+        length_threshold=length_threshold,
+        convex_hull_indexes=convex_hull_indexes,
+        is_wgs84=is_wgs84,
+    )
     return (
         points[indexes]
         if isinstance(points, np.ndarray)
@@ -55,13 +68,31 @@ def concave_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
     )
 
 
-def convex_hull_indexes(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
+def convex_hull_indexes(
+    points: Union[np.ndarray, List, Tuple],
+    *,
+    include_colinear: bool = False,
+    order_only: bool = False,
+):
     points = np.asarray(points, dtype=np.float64)
-    return convex_hull_indexes_impl(points[:, :2], *args, **kwargs)
+    return convex_hull_indexes_impl(
+        points[:, :2],
+        include_colinear=include_colinear,
+        order_only=order_only,
+    )
 
 
-def convex_hull(points: Union[np.ndarray, List, Tuple], *args, **kwargs):
-    indexes = convex_hull_indexes(points, *args, **kwargs)
+def convex_hull(
+    points: Union[np.ndarray, List, Tuple],
+    *,
+    include_colinear: bool = False,
+    order_only: bool = False,
+):
+    indexes = convex_hull_indexes(
+        points,
+        include_colinear=include_colinear,
+        order_only=order_only,
+    )
     return (
         points[indexes]
         if isinstance(points, np.ndarray)

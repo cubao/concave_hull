@@ -11,6 +11,7 @@ from concave_hull import (
     concave_hull,
     concave_hull_indexes,
     convex_hull_indexes,
+    convex_hull_indexes_impl,
     orientation,
     wgs84_to_east_north,
 )
@@ -289,7 +290,7 @@ def test_colinear():
 def test_convex_hull_random():
     from scipy.spatial import ConvexHull
 
-    time_cubao, time_scipy = 0.0, 0.0
+    time_cubao, time_cubao_impl, time_scipy = 0.0, 0.0, 0.0
     for _ in range(100):
         N = np.random.randint(400, 900)
         rand = np.random.random((N, 2))
@@ -309,7 +310,12 @@ def test_convex_hull_random():
             # assert equal
             idx1, idx2 = (normalize_indexes(i) for i in [idx1, idx2])
             assert idx1 == idx2
-    print(f"speed up: x{time_scipy / time_cubao:.2f}")
+            # cubao c++ direct call
+            tick = time.time()
+            idx2 = convex_hull_indexes_impl(xys)
+            time_cubao_impl += time.time() - tick
+    print(f"speed up: x{time_scipy / time_cubao:.3f}")
+    print(f"speed up: x{time_scipy / time_cubao_impl:.3f} (impl)")
     assert time_cubao < time_scipy
 
 
