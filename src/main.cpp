@@ -99,14 +99,14 @@ PYBIND11_MODULE(pybind11_concave_hull, m)
     m.def("convex_hull_indexes", &cubao::convex_hull::convex_hull_indexes,
           "points"_a,    //
           py::kw_only(), //
-          "include_collinear"_a = false)
+          "include_colinear"_a = false)
         .def("orientation", &cubao::convex_hull::orientation, //
              "prev"_a, "curr"_a, "next"_a)
         .def("clockwise", &cubao::convex_hull::cw, //
              "prev"_a, "curr"_a, "next"_a,         //
              py::kw_only(),                        //
-             "include_collinear"_a)
-        .def("collinear", &cubao::convex_hull::collinear, //
+             "include_colinear"_a)
+        .def("colinear", &cubao::convex_hull::colinear, //
              "prev"_a, "curr"_a, "next"_a)
         //
         ;

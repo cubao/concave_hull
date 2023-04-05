@@ -5,9 +5,12 @@ import sys
 import numpy as np
 
 from concave_hull import (
+    clockwise,
+    colinear,
     concave_hull,
     concave_hull_indexes,
     convex_hull_indexes,
+    orientation,
     wgs84_to_east_north,
 )
 
@@ -238,6 +241,16 @@ def test_convex_hull():
     assert normalize_indexes(indexes3) == [0, 2, 4, 6]
 
 
+def test_colinear():
+    assert colinear([0, 0], [1, 1], [2, 2])
+    assert not colinear([0, 0], [1, 1], [2, 2 + 1e-9])
+
+    assert not clockwise([0, 0], [1, 1], [2, 2], include_colinear=False)
+    assert clockwise([0, 0], [1, 1], [2, 2], include_colinear=True)
+
+    pass
+
+
 def test_convex_hull_random():
     from scipy.spatial import ConvexHull
 
@@ -246,7 +259,7 @@ def test_convex_hull_random():
         xys = np.random.random((N, 2))
         convex_hull = ConvexHull(xys)
         idx1 = convex_hull.vertices.astype(np.int32)
-        idx2 = convex_hull_indexes(xys, include_collinear=True)
+        idx2 = convex_hull_indexes(xys, include_colinear=True)
         idx1, idx2 = (normalize_indexes(i) for i in [idx1, idx2])
         print(idx1)
         print(idx2)
@@ -323,6 +336,8 @@ def pytest_main(dir: str, *, test_file: str = None):
 
 
 if __name__ == "__main__":
+    test_colinear()
+    raise Exception()
     np.set_printoptions(suppress=True)
     pwd = os.path.abspath(os.path.dirname(__file__))
     pytest_main(pwd, test_file=os.path.basename(__file__))

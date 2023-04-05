@@ -29,14 +29,14 @@ inline int orientation(const Eigen::Vector2d &a, //
 inline bool cw(const Eigen::Vector2d &a, //
                const Eigen::Vector2d &b, //
                const Eigen::Vector2d &c, //
-               bool include_collinear)
+               bool include_colinear)
 {
     int o = orientation(a, b, c);
-    return o < 0 || (include_collinear && o == 0);
+    return o < 0 || (include_colinear && o == 0);
 }
-inline bool collinear(const Eigen::Vector2d &a, //
-                      const Eigen::Vector2d &b, //
-                      const Eigen::Vector2d &c)
+inline bool colinear(const Eigen::Vector2d &a, //
+                     const Eigen::Vector2d &b, //
+                     const Eigen::Vector2d &c)
 {
     return orientation(a, b, c) == 0;
 }
@@ -50,7 +50,7 @@ inline double squaredNorm(const Eigen::Vector2d &a, const Eigen::Vector2d &b)
 
 inline Eigen::VectorXi
 convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
-                    bool include_collinear = false)
+                    bool include_colinear = false)
 {
     const int N = points.rows();
     Eigen::Vector2d p0(points(0, 0), points(0, 1));
@@ -71,10 +71,10 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         }
         return o < 0;
     });
-    if (include_collinear) {
+    if (include_colinear) {
         int i = N - 1;
         while (i >= 0 &&
-               collinear(p0, points.row(index[i]), points.row(index.back()))) {
+               colinear(p0, points.row(index[i]), points.row(index.back()))) {
             i--;
         }
         std::reverse(index.begin() + i + 1, index.end());
@@ -84,7 +84,7 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         while (st.size() > 1 && !cw(points.row(st[st.size() - 2]), //
                                     points.row(st.back()),         //
                                     points.row(index[i]),          //
-                                    include_collinear)) {
+                                    include_colinear)) {
             st.pop_back();
         }
         st.push_back(index[i]);
