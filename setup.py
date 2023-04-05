@@ -122,7 +122,7 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="concave_hull",
-    version="0.0.5",
+    version="0.0.6",
     author="tzx",
     author_email="dvorak4tzx@gmail.com",
     url="https://concave-hull.readthedocs.io",
@@ -133,6 +133,6 @@ setup(
     ext_modules=[CMakeExtension("concave_hull")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    install_requires=["numpy", "scipy"],
+    install_requires=["numpy"],
     extras_require={"test": ["pytest>=6.0"]},
 )
