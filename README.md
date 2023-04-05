@@ -98,9 +98,6 @@ for simplex in convex_hull.simplices:
 idxes = concave_hull_indexes(
     points[:, :2],
     length_threshold=50,
-    # for concave_hull>=0.0.3
-    #   it's not necessary to provide convex_hull_indexes
-    # convex_hull_indexes=convex_hull.vertices.astype(np.int32),
 )
 # you can get coordinates by `points[idxes]`
 assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
