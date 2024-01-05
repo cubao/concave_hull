@@ -695,7 +695,6 @@ std::vector<int> concaveman_indexes(
     // further
     T lengthThreshold = 0)
 {
-
     typedef Node<T> node_type;
     typedef std::array<T, 3> point_type;
     typedef CircularElement<node_type> circ_elem_type;
