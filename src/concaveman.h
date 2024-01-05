@@ -561,12 +561,9 @@ concaveman(const std::vector<std::array<T, 2>> &points,
 
     // index the points with an R-tree
     rtree<T, 2, MAX_CHILDREN, point_type> tree;
-    std::map<std::array<T, 2>, int> points_index;
     for (int index = 0; index < int(points.size()); index++) {
-        point_type p{points[index][0], points[index][1], index};
+        point_type p{points[index][0], points[index][1], (T)index};
         tree.insert(p, {p[0], p[1], p[0], p[1]});
-        points_index.insert(
-            std::pair<std::array<T, 2>, int>(points[index], index));
     }
 
     // for (auto &p : points)
@@ -581,7 +578,7 @@ concaveman(const std::vector<std::array<T, 2>> &points,
     // queue with the nodes
     for (auto &idx : hull) {
         auto &pp = points[idx];
-        point_type p{pp[0], pp[1], points_index[pp]};
+        point_type p{pp[0], pp[1], (T)idx};
         tree.erase(p, {p[0], p[1], p[0], p[1]});
         last = circList.insert(last, p);
         queue.push_back(last);
@@ -716,16 +713,10 @@ std::vector<int> concaveman_indexes(
 
     // index the points with an R-tree
     rtree<T, 2, MAX_CHILDREN, point_type> tree;
-    std::map<std::array<T, 2>, int> points_index;
     for (int index = 0; index < int(points.size()); index++) {
         point_type p{points[index][0], points[index][1], (T)index};
         tree.insert(p, {p[0], p[1], p[0], p[1]});
-        points_index.insert(
-            std::pair<std::array<T, 2>, int>(points[index], index));
     }
-
-    // for (auto &p : points)
-    //     tree.insert(p, { p[0], p[1], p[0], p[1] });
 
     circ_list_type circList;
     circ_elem_ptr_type last = nullptr;
@@ -736,7 +727,7 @@ std::vector<int> concaveman_indexes(
     // queue with the nodes
     for (auto &idx : hull) {
         auto &pp = points[idx];
-        point_type p{pp[0], pp[1], (T)points_index[pp]};
+        point_type p{pp[0], pp[1], (T)idx};
         tree.erase(p, {p[0], p[1], p[0], p[1]});
         last = circList.insert(last, p);
         queue.push_back(last);
