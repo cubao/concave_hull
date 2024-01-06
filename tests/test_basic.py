@@ -5,16 +5,10 @@ import time
 
 import numpy as np
 
-from concave_hull import (
-    clockwise,
-    colinear,
-    concave_hull,
-    concave_hull_indexes,
-    convex_hull_indexes,
-    convex_hull_indexes_impl,
-    orientation,
-    wgs84_to_east_north,
-)
+from concave_hull import (clockwise, colinear, concave_hull,
+                          concave_hull_indexes, convex_hull_indexes,
+                          convex_hull_indexes_impl, orientation,
+                          wgs84_to_east_north)
 
 
 def normalize_indexes(index):
