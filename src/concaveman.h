@@ -216,10 +216,6 @@ template <class T, int DIM, int MAX_CHILDREN, class DATA> class rtree
         }
         if (!best_child.get().is_leaf()) {
             best_child.get().insert(data, bounds);
-#ifdef DEBUG
-            std::cout << "best_child: " << bounds[0] << " " << bounds[1]
-                      << std::endl;
-#endif
             return;
         }
 
@@ -264,7 +260,7 @@ template <class T, int DIM, int MAX_CHILDREN, class DATA> class rtree
         return true;
     }
 
-    void erase(data_type data, const bounds_type &bounds)
+    void erase(const data_type &data, const bounds_type &bounds)
     {
         if (m_is_leaf)
             throw std::runtime_error("Cannot erase from leaves");
@@ -280,25 +276,6 @@ template <class T, int DIM, int MAX_CHILDREN, class DATA> class rtree
                 m_children.erase(it++);
             } else
                 it++;
-        }
-    }
-
-    void print(int level = 0)
-    {
-        // print the entire tree
-
-        for (auto it = m_children.begin(); it != m_children.end();) {
-            auto bounds = (*it)->m_bounds;
-            std::string pad(level, '\t');
-            if ((*it)->m_is_leaf) {
-                printf("%s leaf %0.6f %0.6f \n", pad.c_str(), bounds[0],
-                       bounds[1]);
-            } else {
-                printf("%s branch %0.6f %0.6f %0.6f %0.6f \n", pad.c_str(),
-                       bounds[0], bounds[1], bounds[2], bounds[3]);
-                (*it)->print(level + 1);
-            }
-            it++;
         }
     }
 
@@ -331,46 +308,6 @@ template <class T, int DIM, int MAX_CHILDREN, class DATA> class rtree
     const std::list<std::unique_ptr<type>> &children() const
     {
         return m_children;
-    }
-
-    static std::string bounds_to_string(const bounds_type &bounds)
-    {
-        std::string res = "( ";
-        for (auto i = 0; i < DIM * 2; i++) {
-            if (i > 0)
-                res += ", ";
-            res += std::to_string(bounds[i]);
-        }
-        res += " )";
-        return res;
-    }
-
-    void to_string(std::string &res, int tab) const
-    {
-        std::string pad(tab, '\t');
-
-        if (m_is_leaf) {
-            res += pad + "{ data: " + std::to_string(m_data) +
-                   ", bounds: " + bounds_to_string(m_bounds) + " }";
-            return;
-        }
-
-        res +=
-            pad + "{ bounds: " + bounds_to_string(m_bounds) + ", children: [\n";
-        auto i = 0;
-        for (auto &ch : m_children) {
-            if (i++ > 0)
-                res += "\n";
-            ch->to_string(res, tab + 1);
-        }
-        res += "\n" + pad + "]}";
-    }
-
-    std::string to_string() const
-    {
-        std::string res;
-        to_string(res, 0);
-        return res;
     }
 
   private:
@@ -516,9 +453,9 @@ std::vector<int> concaveman_indexes(
 
     // index the points with an R-tree
     rtree<T, 2, MAX_CHILDREN, point_type> tree;
-    for (int index = 0; index < int(points.size()); index++) {
+    for (size_t index = 0, N = points.size(); index < N; index++) {
         point_type p{points[index][0], points[index][1], (T)index};
-        tree.insert(p, {p[0], p[1], p[0], p[1]});
+        tree.insert(std::move(p), {p[0], p[1], p[0], p[1]});
     }
 
     circ_list_type circList;
@@ -636,7 +573,7 @@ findCandidate(const rtree<T, 2, MAX_CHILDREN, std::array<T, 3>> &tree,
     while (true) {
         for (auto &child : node.get().children()) {
 
-            auto bounds = child->bounds();
+            const auto &bounds = child->bounds();
             point_type pt = {bounds[0], bounds[1]};
 
             auto dist = child->is_leaf() ? sqSegDist(pt, b, c)
@@ -725,9 +662,7 @@ bool inside(const std::array<T, 3> &a,
     auto maxX = bounds[2];
     auto maxY = bounds[3];
 
-    auto res =
-        (a[0] >= minX) && (a[0] <= maxX) && (a[1] >= minY) && (a[1] <= maxY);
-    return res;
+    return (a[0] >= minX) && (a[0] <= maxX) && (a[1] >= minY) && (a[1] <= maxY);
 }
 
 // check if the edge (a,b) doesn't intersect any other edges
