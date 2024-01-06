@@ -54,6 +54,9 @@ python_wheel:
 python_sdist:
 	$(PYTHON) -m pip sdist . --verbose
 python_test: pytest
+pytest:
+	python3 -m pip install pytest
+	pytest tests/test_basic.py
 .PHONY: build
 
 # conda create -y -n py36 python=3.6
