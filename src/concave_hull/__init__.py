@@ -1,14 +1,12 @@
 from typing import List, Tuple, Union
 
 import numpy as np
-import pybind11_concave_hull  # noqa
-from pybind11_concave_hull import __version__  # noqa
-from pybind11_concave_hull import clockwise, colinear  # noqa
-from pybind11_concave_hull import (  # noqa
-    concave_hull_indexes as concave_hull_indexes_impl,
-)
-from pybind11_concave_hull import convex_hull_indexes as convex_hull_indexes_impl
-from pybind11_concave_hull import orientation, wgs84_to_east_north  # noqa
+
+from ._core import __version__  # noqa
+from ._core import clockwise, colinear  # noqa
+from ._core import concave_hull_indexes as concave_hull_indexes_impl  # noqa
+from ._core import convex_hull_indexes as convex_hull_indexes_impl
+from ._core import orientation, wgs84_to_east_north  # noqa
 
 
 def concave_hull_indexes(

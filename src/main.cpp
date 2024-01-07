@@ -74,7 +74,7 @@ WGS84_to_EAST_NORTH(const Eigen::Ref<const RowVectorsNx2> &llas)
     return enus;
 }
 
-PYBIND11_MODULE(pybind11_concave_hull, m)
+PYBIND11_MODULE(_core, m)
 {
     m.doc() = R"pbdoc(
         A very fast 2D concave hull algorithm
