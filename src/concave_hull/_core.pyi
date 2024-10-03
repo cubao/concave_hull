@@ -63,4 +63,4 @@ def wgs84_to_east_north(
     documents here: https://github.com/mapbox/cheap-ruler
     """
 
-__version__: str = "0.0.7"
+__version__: str = "0.0.8"
