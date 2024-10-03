@@ -9,3 +9,4 @@ _generate/
 wheelhouse
 !test.py
 site
+stubs

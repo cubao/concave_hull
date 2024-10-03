@@ -10,6 +10,10 @@ To upgrade `concave_hull` to the latest version, use pip:
 pip install -U concave_hull
 ```
 
+## Version 0.0.8 (2024-10-03)
+
+*   Add typing stubs
+
 ## Version 0.0.7 (2024-01-06)
 
 *   Strip useless code

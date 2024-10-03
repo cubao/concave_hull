@@ -59,6 +59,10 @@ pytest:
 	pytest tests/test_basic.py
 .PHONY: build
 
+restub:
+	pybind11-stubgen concave_hull._core -o stubs
+	cp stubs/concave_hull/_core.pyi src/concave_hull
+
 # conda create -y -n py36 python=3.6
 # conda create -y -n py37 python=3.7
 # conda create -y -n py38 python=3.8

@@ -38,7 +38,7 @@ endif()
 # https://scikit-build-core.readthedocs.io/en/latest/getting_started.html
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/headers/include)
+include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/headers/include)
 
 python_add_library(_core MODULE src/main.cpp WITH_SOABI)
 target_link_libraries(_core PRIVATE pybind11::headers)
