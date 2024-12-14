@@ -10,7 +10,36 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
-#include "convex_hull.hpp"
+// #include "convex_hull.hpp"
+#include "convex_hull2.hpp"
+namespace cubao
+{
+namespace convex_hull
+{
+inline Eigen::VectorXi
+convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
+                    bool include_colinear = false, //
+                    bool order_only = false)
+{
+    const int N = points.rows();
+    std::vector<std::array<double, 3>> points_vec;
+    points_vec.reserve(N);
+    for (int i = 0; i < N; ++i) {
+        points_vec.push_back(
+            {points(i, 0), points(i, 1), static_cast<double>(i)});
+    }
+    auto hull = cubao::convex_hull2::fastConvexHull(points_vec);
+    std::vector<int> index;
+    index.reserve(hull.size());
+    for (const auto &p : hull) {
+        index.push_back(static_cast<int>(p[2]));
+    }
+    return Eigen::VectorXi::Map(&index[0], index.size());
+}
+
+} // namespace convex_hull
+} // namespace cubao
+
 #include "concaveman.h"
 
 #define STRINGIFY(x) #x
