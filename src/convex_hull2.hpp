@@ -4,7 +4,6 @@
 #pragma once
 
 #include "orient2d.hpp"
-#include "dbg.h"
 #include <vector>
 #include <array>
 
@@ -38,22 +37,18 @@ convexHull(std::vector<std::array<double, 3>> points)
     if (points.empty()) {
         return {};
     }
-    std::sort(points.begin(), points.end(), [](const auto &a, const auto &b) {
-        return a[0] == b[0] ? a[1] - b[1] : a[0] - b[0];
-    });
+    std::sort(
+        points.begin(), points.end(),
+        [](const std::array<double, 3> &a, const std::array<double, 3> &b) {
+            return a[0] == b[0] ? a[1] < b[1] : a[0] < b[0];
+        });
     points.erase(std::unique(points.begin(), points.end(),
                              [](const auto &a, const auto &b) {
                                  return a[0] == b[0] && a[1] == b[1];
                              }),
                  points.end());
-    dbg("convexHull");
-    for (auto &p : points) {
-        dbg(p);
-    }
-    dbg("convexHull???");
 
     std::vector<std::array<double, 3>> lower;
-    dbg("lower");
     for (size_t i = 0; i < points.size(); i++) {
         while (lower.size() >= 2 &&
                cross(lower[lower.size() - 2].data(),
@@ -63,7 +58,6 @@ convexHull(std::vector<std::array<double, 3>> points)
         lower.push_back(points[i]);
     }
 
-    dbg("upper");
     std::vector<std::array<double, 3>> upper;
     for (int i = points.size() - 1; i >= 0; i--) {
         while (upper.size() >= 2 &&
@@ -128,10 +122,6 @@ fastConvexHull(const std::vector<std::array<double, 3>> &points)
         if (p[1] > bottom[1])
             bottom = p;
     }
-    dbg(left);
-    dbg(top);
-    dbg(right);
-    dbg(bottom);
 
     // filter out points that are inside the resulting quadrilateral
     std::vector<std::array<double, 2>> cull = {{left[0], left[1]},

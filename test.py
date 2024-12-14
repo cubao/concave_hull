@@ -37,7 +37,7 @@ for i, j in zip(hull[:-1], hull[1:]):  # noqa: B905
 idxes = concave_hull_indexes(
     points[:, :2],
     length_threshold=50,
-    convex_hull_indexes=convex_hull.vertices.astype(np.int32),
+    # convex_hull_indexes=convex_hull.vertices.astype(np.int32),
 )
 # you can get coordinates by `points[idxes]`
 # assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
