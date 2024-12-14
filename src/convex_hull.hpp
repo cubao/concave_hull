@@ -9,6 +9,11 @@
 #include <vector>
 #include <algorithm>
 
+namespace cubao
+{
+namespace convex_hull
+{
+
 inline int orientation(const Eigen::Vector2d &a, const Eigen::Vector2d &b,
                        const Eigen::Vector2d &c)
 {

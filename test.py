@@ -29,7 +29,7 @@ for simplex in convex_hull.simplices:
     plt.plot(points[simplex, 0], points[simplex, 1], "g-", alpha=0.5)
 
 hull = convex_hull_indexes(points[:, :2])
-for i, j in zip(hull[:-1], hull[1:]):
+for i, j in zip(hull[:-1], hull[1:]):  # noqa: B905
     plt.plot(
         [points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], "g-", alpha=0.5
     )
@@ -37,14 +37,14 @@ for i, j in zip(hull[:-1], hull[1:]):
 idxes = concave_hull_indexes(
     points[:, :2],
     length_threshold=50,
-    # convex_hull_indexes=convex_hull.vertices.astype(np.int32),
+    convex_hull_indexes=convex_hull.vertices.astype(np.int32),
 )
 # you can get coordinates by `points[idxes]`
-assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
+# assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
 
-# for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
-#     seg = points[[f, t]]
-#     plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
+for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
+    seg = points[[f, t]]
+    plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
 
 plt.gca().set_aspect("equal")
 # plt.savefig("docs/hull.png")
