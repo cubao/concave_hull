@@ -1,24 +1,12 @@
 #pragma once
 
+#include <cmath>
+#include "macros.hpp"
+
 namespace cubao
 {
 namespace robust_predicates
 {
-// https://github.com/mourner/robust-predicates/blob/312178014c173cfa5ed0a8cb5496baaf82a63663/compile.js#L6
-#define Fast_Two_Sum(a, b, x, y) \
-    do { \
-        x = a + b; \
-        y = b - (x - a); \
-    } while (0)
-
-#define Two_Sum(a, b, x, y) \
-    do { \
-        double bvirt; \
-        x = a + b; \
-        bvirt = x - a; \
-        y = a - (x - bvirt) + (b - bvirt); \
-    } while (0)
-
 // fast_expansion_sum_zeroelim routine from original code
 inline int sum(int elen, const double* e, int flen, const double* f, double* h) {
     double Q, Qnew, hh, bvirt;
@@ -96,6 +84,10 @@ static constexpr double epsilon = 1.1102230246251565e-16;
 static constexpr double splitter = 134217729;
 static constexpr double resulterrbound = (3 + 8 * epsilon) * epsilon;
 
+static constexpr double ccwerrboundA = (3 + 16 * epsilon) * epsilon;
+static constexpr double ccwerrboundB = (2 + 12 * epsilon) * epsilon;
+static constexpr double ccwerrboundC = (9 + 64 * epsilon) * epsilon * epsilon;
+
 static double B[4];
 static double C1[8];
 static double C2[12];
@@ -151,8 +143,8 @@ double orient2d(double ax, double ay, double bx, double by, double cx, double cy
     double detright = (ax - cx) * (by - cy);
     double det = detleft - detright;
 
-    double detsum = std::abs(detleft + detright);
-    if (std::abs(det) >= ccwerrboundA * detsum) return det;
+    double detsum = std::fabs(detleft + detright);
+    if (std::fabs(det) >= ccwerrboundA * detsum) return det;
 
     return -orient2dadapt(ax, ay, bx, by, cx, cy, detsum);
 }
