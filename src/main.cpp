@@ -10,11 +10,13 @@
 #include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 
-// #include "convex_hull.hpp"
+#include "convex_hull.hpp"
 #include "convex_hull2.hpp"
+
+using RowVectorsNx2 = Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor>;
 namespace cubao
 {
-namespace convex_hull
+namespace convex_hull2
 {
 inline Eigen::VectorXi
 convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
@@ -37,7 +39,7 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
     return Eigen::VectorXi::Map(&index[0], index.size());
 }
 
-} // namespace convex_hull
+} // namespace convex_hull2
 } // namespace cubao
 
 #include "concaveman.h"
@@ -125,7 +127,7 @@ PYBIND11_MODULE(_core, m)
     m.def("wgs84_to_east_north", &WGS84_to_EAST_NORTH, "wgs84"_a,
           "documents here: https://github.com/mapbox/cheap-ruler");
 
-    m.def("convex_hull_indexes", &cubao::convex_hull::convex_hull_indexes,
+    m.def("convex_hull_indexes", &cubao::convex_hull2::convex_hull_indexes,
           "points"_a,                   //
           py::kw_only(),                //
           "include_colinear"_a = false, //
