@@ -35,9 +35,9 @@ def concave_hull_indexes(
     if is_wgs84:
         points = wgs84_to_east_north(points)
     if convex_hull_indexes is None:
-        print('shit me22')
+        print("shit me22")
         convex_hull_indexes = convex_hull_indexes_impl(points)
-        print('shit me33', convex_hull_indexes)
+        print("shit me33", convex_hull_indexes)
     return concave_hull_indexes_impl(
         points,
         concavity=concavity,
