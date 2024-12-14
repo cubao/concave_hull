@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "concave_hull"
-version = "0.0.8"
+version = "0.0.9"
 url = "https://concave-hull.readthedocs.io"
 description="A very fast 2D concave hull algorithm"
 readme = "README.md"

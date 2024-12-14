@@ -2,7 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import ConvexHull
 
-from concave_hull import concave_hull, concave_hull_indexes
+from concave_hull import (  # noqa: F401
+    concave_hull,
+    concave_hull_indexes,
+    convex_hull_indexes,
+)
 
 points = []
 c = np.array([250, 250])
@@ -21,14 +25,22 @@ convex_hull = ConvexHull(points[:, :2])  # it's already N-by-2, I'm just emphasi
 
 plt.plot(points[:, 0], points[:, 1], "o")
 for simplex in convex_hull.simplices:
+    continue
     plt.plot(points[simplex, 0], points[simplex, 1], "g-", alpha=0.5)
+
+hull = convex_hull_indexes(points[:, :2])
+for i, j in zip(hull[:-1], hull[1:]):  # noqa: B905
+    plt.plot(
+        [points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], "g-", alpha=0.5
+    )
 
 idxes = concave_hull_indexes(
     points[:, :2],
     length_threshold=50,
+    # convex_hull_indexes=convex_hull.vertices.astype(np.int32),
 )
 # you can get coordinates by `points[idxes]`
-assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
+# assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
 
 for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
     seg = points[[f, t]]

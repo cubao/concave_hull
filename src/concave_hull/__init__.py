@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from __future__ import annotations
 
 import numpy as np
 
@@ -10,11 +10,11 @@ from ._core import orientation, wgs84_to_east_north  # noqa
 
 
 def concave_hull_indexes(
-    points: Union[np.ndarray, List, Tuple],
+    points: np.ndarray | list | tuple,
     *,
     concavity: float = 2.0,
     length_threshold: float = 0.0,
-    convex_hull_indexes: np.ndarray = None,  # noqa
+    convex_hull_indexes: np.ndarray | None = None,  # noqa
     is_wgs84: bool = False,
 ):
     """
@@ -45,7 +45,7 @@ def concave_hull_indexes(
 
 
 def concave_hull(
-    points: Union[np.ndarray, List, Tuple],
+    points: np.ndarray | list | tuple,
     *,
     concavity: float = 2.0,
     length_threshold: float = 0.0,
@@ -67,7 +67,7 @@ def concave_hull(
 
 
 def convex_hull_indexes(
-    points: Union[np.ndarray, List, Tuple],
+    points: np.ndarray | list | tuple,
     *,
     include_colinear: bool = False,
     order_only: bool = False,
@@ -81,7 +81,7 @@ def convex_hull_indexes(
 
 
 def convex_hull(
-    points: Union[np.ndarray, List, Tuple],
+    points: np.ndarray | list | tuple,
     *,
     include_colinear: bool = False,
     order_only: bool = False,

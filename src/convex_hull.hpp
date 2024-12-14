@@ -55,6 +55,9 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
                     bool order_only = false)
 {
     const int N = points.rows();
+    if (N == 0) {
+        return Eigen::VectorXi(0);
+    }
     Eigen::Vector2d p0(points(0, 0), points(0, 1));
     for (int i = 1; i < N; ++i) {
         if (points(i, 1) < p0[1] ||
