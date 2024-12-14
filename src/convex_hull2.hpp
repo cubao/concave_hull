@@ -134,9 +134,7 @@ fastConvexHull(const std::vector<std::array<double, 3>> &points)
             filtered.push_back(p);
         }
     }
-    dbg(filtered.size());
     // get convex hull around the filtered points
-    dbg("todo");
     return convexHull(filtered);
 }
 
