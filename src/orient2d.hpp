@@ -8,7 +8,8 @@ namespace cubao
 namespace robust_predicates
 {
 // fast_expansion_sum_zeroelim routine from original code
-inline int sum(int elen, const double* e, int flen, const double* f, double* h) {
+inline int sum(int elen, const double *e, int flen, const double *f, double *h)
+{
     double Q, Qnew, hh, bvirt;
     double enow = e[0];
     double fnow = f[0];
@@ -70,8 +71,8 @@ inline int sum(int elen, const double* e, int flen, const double* f, double* h) 
     return hindex;
 }
 
-template <typename T>
-T estimate(int elen, const T* e) {
+template <typename T> T estimate(int elen, const T *e)
+{
     T Q = e[0];
     for (int i = 1; i < elen; i++) {
         Q += e[i];
@@ -94,7 +95,9 @@ static double C2[12];
 static double D[16];
 static double u[4];
 
-double orient2dadapt(double ax, double ay, double bx, double by, double cx, double cy, double detsum) {
+double orient2dadapt(double ax, double ay, double bx, double by, double cx,
+                     double cy, double detsum)
+{
     double acxtail = 0, acytail = 0, bcxtail = 0, bcytail = 0;
     double bvirt, c, ahi, alo, bhi, blo, _i, _j, _0, s1, s0, t1, t0, u3;
 
@@ -122,7 +125,8 @@ double orient2dadapt(double ax, double ay, double bx, double by, double cx, doub
 
     errbound = ccwerrboundC * detsum + resulterrbound * std::abs(det);
     det += (acx * bcytail + bcy * acxtail) - (acy * bcxtail + bcx * acytail);
-    if (det >= errbound || -det >= errbound) return det;
+    if (det >= errbound || -det >= errbound)
+        return det;
 
     Cross_Product(acxtail, bcx, acytail, bcy, u);
     int C1len = sum(4, B, 4, u, C1);
@@ -136,20 +140,25 @@ double orient2dadapt(double ax, double ay, double bx, double by, double cx, doub
     return D[Dlen - 1];
 }
 
-double orient2d(double ax, double ay, double bx, double by, double cx, double cy) {
+double orient2d(double ax, double ay, double bx, double by, double cx,
+                double cy)
+{
     double detleft = (ay - cy) * (bx - cx);
     double detright = (ax - cx) * (by - cy);
     double det = detleft - detright;
 
     double detsum = std::fabs(detleft + detright);
-    if (std::fabs(det) >= ccwerrboundA * detsum) return det;
+    if (std::fabs(det) >= ccwerrboundA * detsum)
+        return det;
 
     return -orient2dadapt(ax, ay, bx, by, cx, cy, detsum);
 }
 
-double orient2dfast(double ax, double ay, double bx, double by, double cx, double cy) {
+double orient2dfast(double ax, double ay, double bx, double by, double cx,
+                    double cy)
+{
     return (ay - cy) * (bx - cx) - (ax - cx) * (by - cy);
 }
 
-}
-}
+} // namespace robust_predicates
+} // namespace cubao
