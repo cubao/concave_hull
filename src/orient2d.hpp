@@ -89,15 +89,17 @@ static constexpr double ccwerrboundA = (3 + 16 * epsilon) * epsilon;
 static constexpr double ccwerrboundB = (2 + 12 * epsilon) * epsilon;
 static constexpr double ccwerrboundC = (9 + 64 * epsilon) * epsilon * epsilon;
 
-static double B[4];
-static double C1[8];
-static double C2[12];
-static double D[16];
-static double u[4];
-
-double orient2dadapt(double ax, double ay, double bx, double by, double cx,
-                     double cy, double detsum)
+double orient2dadapt(double ax, double ay, //
+                     double bx, double by, //
+                     double cx, double cy, //
+                     double detsum)
 {
+    double B[4];
+    double C1[8];
+    double C2[12];
+    double D[16];
+    double u[4];
+
     double acxtail = 0, acytail = 0, bcxtail = 0, bcytail = 0;
     double bvirt, c, ahi, alo, bhi, blo, _i, _j, _0, s1, s0, t1, t0, u3;
 
