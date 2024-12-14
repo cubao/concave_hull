@@ -12,6 +12,7 @@
 
 #include "convex_hull.hpp"
 #include "convex_hull2.hpp"
+#include "dbg.h"
 
 using RowVectorsNx2 = Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor>;
 namespace cubao
@@ -24,6 +25,7 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
                     bool order_only = false)
 {
     const int N = points.rows();
+    dbg(N);
     std::vector<std::array<double, 3>> points_vec;
     points_vec.reserve(N);
     for (int i = 0; i < N; ++i) {
@@ -31,6 +33,7 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
             {points(i, 0), points(i, 1), static_cast<double>(i)});
     }
     auto hull = cubao::convex_hull2::fastConvexHull(points_vec);
+    dbg(hull.size());
     std::vector<int> index;
     index.reserve(hull.size());
     for (const auto &p : hull) {
