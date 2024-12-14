@@ -14,15 +14,19 @@ namespace cubao
 namespace convex_hull
 {
 
-inline int orientation(const Eigen::Vector2d &a, const Eigen::Vector2d &b,
+inline int orientation(const Eigen::Vector2d &a, //
+                       const Eigen::Vector2d &b, //
                        const Eigen::Vector2d &c)
 {
-    double val = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
-    if (std::abs(val) < 1e-12)
-        return 0;
-    return (val > 0) ? +1 : -1;
+    // np.sign(np.cross(a->b, a->c)[2])
+    double v =
+        a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
+    if (v < 0)
+        return -1; // clockwise
+    if (v > 0)
+        return +1; // counter-clockwise
+    return 0;
 }
-
 inline bool cw(const Eigen::Vector2d &a, //
                const Eigen::Vector2d &b, //
                const Eigen::Vector2d &c, //
