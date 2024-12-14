@@ -89,10 +89,11 @@ static constexpr double ccwerrboundA = (3 + 16 * epsilon) * epsilon;
 static constexpr double ccwerrboundB = (2 + 12 * epsilon) * epsilon;
 static constexpr double ccwerrboundC = (9 + 64 * epsilon) * epsilon * epsilon;
 
-double orient2dadapt(double ax, double ay, //
-                     double bx, double by, //
-                     double cx, double cy, //
-                     double detsum)
+inline double orient2dadapt( //
+    double ax, double ay,    //
+    double bx, double by,    //
+    double cx, double cy,    //
+    double detsum)
 {
     double B[4];
     double C1[8];
@@ -142,8 +143,9 @@ double orient2dadapt(double ax, double ay, //
     return D[Dlen - 1];
 }
 
-double orient2d(double ax, double ay, double bx, double by, double cx,
-                double cy)
+inline double orient2d(double ax, double ay, //
+                       double bx, double by, //
+                       double cx, double cy)
 {
     double detleft = (ay - cy) * (bx - cx);
     double detright = (ax - cx) * (by - cy);
@@ -156,8 +158,9 @@ double orient2d(double ax, double ay, double bx, double by, double cx,
     return -orient2dadapt(ax, ay, bx, by, cx, cy, detsum);
 }
 
-double orient2dfast(double ax, double ay, double bx, double by, double cx,
-                    double cy)
+inline double orient2dfast(double ax, double ay, //
+                           double bx, double by, //
+                           double cx, double cy)
 {
     return (ay - cy) * (bx - cx) - (ax - cx) * (by - cy);
 }
