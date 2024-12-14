@@ -8,6 +8,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include <algorithm>
+#include "dbg.h"
 
 namespace cubao
 {
@@ -54,7 +55,15 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
                     bool include_colinear = false, //
                     bool order_only = false)
 {
+    std::cout << "shit me points" << points << std::endl;
     const int N = points.rows();
+    if (N == 0) {
+        return Eigen::VectorXi(0);
+    }
+    dbg(N);
+    dbg(include_colinear);
+    dbg(order_only);
+    dbg("hello");
     Eigen::Vector2d p0(points(0, 0), points(0, 1));
     for (int i = 1; i < N; ++i) {
         if (points(i, 1) < p0[1] ||
@@ -63,16 +72,23 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
             p0[1] = points(i, 1);
         }
     }
+    dbg("yes");
     std::vector<int> index(N);
     std::iota(index.begin(), index.end(), 0);
+    std::cout << "index" << Eigen::VectorXi::Map(&index[0], index.size()).transpose() << std::endl;
+    dbg(index);
+    dbg("yes2");
     std::sort(index.begin(), index.end(), [&](int i, int j) {
+        dbg(i, j);
         int o = orientation(p0, points.row(i), points.row(j));
+        dbg(o);
         if (o == 0) {
             return squaredNorm(points.row(i), p0) <
                    squaredNorm(points.row(j), p0);
         }
         return o < 0;
     });
+    dbg("yes3");
     if (include_colinear) {
         int i = N - 1;
         while (i >= 0 &&
@@ -81,9 +97,11 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         }
         std::reverse(index.begin() + i + 1, index.end());
     }
+    dbg("yes4");
     if (order_only) {
         return Eigen::VectorXi::Map(&index[0], index.size());
     }
+    dbg("yes5");
     std::vector<int> st;
     for (int i = 0; i < N; i++) {
         while (st.size() > 1 && !cw(points.row(st[st.size() - 2]), //
@@ -95,7 +113,9 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
         st.push_back(index[i]);
     }
     // in ccw orientation
+    dbg(st.size());
     std::reverse(st.begin(), st.end());
+    dbg(st);
     return Eigen::VectorXi::Map(&st[0], st.size());
 }
 

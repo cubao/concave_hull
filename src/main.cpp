@@ -25,6 +25,7 @@ Eigen::VectorXi concave_hull_indexes(
     const Eigen::Ref<const Eigen::VectorXi> &convex_hull_indexes,
     double concavity, double lengthThreshould)
 {
+    std::cout << "shit me" << convex_hull_indexes.transpose() << std::endl;
     std::vector<int> hull;
     hull.resize(convex_hull_indexes.size());
     Eigen::VectorXi::Map(&hull[0], hull.size()) = convex_hull_indexes;

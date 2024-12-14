@@ -23,10 +23,12 @@ plt.plot(points[:, 0], points[:, 1], "o")
 for simplex in convex_hull.simplices:
     plt.plot(points[simplex, 0], points[simplex, 1], "g-", alpha=0.5)
 
+print('before')
 idxes = concave_hull_indexes(
     points[:, :2],
     length_threshold=50,
 )
+print('after')
 # you can get coordinates by `points[idxes]`
 assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
 
