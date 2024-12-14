@@ -30,7 +30,9 @@ for simplex in convex_hull.simplices:
 
 hull = convex_hull_indexes(points[:, :2])
 for i, j in zip(hull[:-1], hull[1:]):
-    plt.plot([points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], "g-", alpha=0.5)
+    plt.plot(
+        [points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], "g-", alpha=0.5
+    )
 
 idxes = concave_hull_indexes(
     points[:, :2],

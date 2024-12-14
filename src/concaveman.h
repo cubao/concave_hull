@@ -37,44 +37,8 @@ template <class T>
 T orient2d(const std::array<T, 3> &p1, const std::array<T, 3> &p2,
            const std::array<T, 3> &p3)
 {
-    // Constants for exact geometric predicates
-    constexpr double epsilon = 1e-12;
-    constexpr double splitter = (1 << 27) + 1.0;
-    constexpr double resulterrbound = (3.0 + 8.0 * epsilon) * epsilon;
-    // Calculate differences
-    double acx = p1[0] - p3[0];
-    double bcx = p2[0] - p3[0];
-    double acy = p1[1] - p3[1];
-    double bcy = p2[1] - p3[1];
-    double detleft, detright, det;
-    double detsum;
-    // Helper functions for exact arithmetic
-    auto Two_Product = [](double a, double b, double &x, double &y) {
-        x = a * b;
-        double abig = (1 << 27) * a;
-        double ahi = abig - (abig - a);
-        double alo = a - ahi;
-        double bbig = (1 << 27) * b;
-        double bhi = bbig - (bbig - b);
-        double blo = b - bhi;
-        y = alo * blo - (((x - ahi * bhi) - alo * bhi) - ahi * blo);
-    };
-    auto Fast_Two_Sum = [](double a, double b, double &x, double &y) {
-        x = a + b;
-        double bvirt = x - a;
-        y = b - bvirt;
-    };
-    // Compute the determinant using exact arithmetic
-    Two_Product(acx, bcy, detleft, detright);
-    Two_Product(acy, bcx, det, detsum);
-    double det2 = detleft - det;
-    double detsum2, errbound2;
-    Fast_Two_Sum(det2, detright, detsum2, errbound2);
-    // Return the orientation
-    if (detsum2 > errbound2 || -detsum2 > errbound2) {
-        return detsum2 > 0 ? T(1) : T(-1);
-    }
-    return detsum2 == 0 ? T(0) : (detsum2 > 0 ? T(1) : T(-1));
+    return (p2[1] - p1[1]) * (p3[0] - p2[0]) -
+           (p2[0] - p1[0]) * (p3[1] - p2[1]);
 }
 
 // check if the edges (p1,q1) and (p2,q2) intersect

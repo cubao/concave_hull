@@ -9,55 +9,13 @@
 #include <vector>
 #include <algorithm>
 
-namespace cubao
-{
-namespace convex_hull
-{
-// https://github.com/danshapero/predicates/blob/master/src/predicates.c
-constexpr double epsilon = 1.0e-12;
-constexpr double splitter = (1 << 27) + 1.0;
-constexpr double resulterrbound = (3.0 + 8.0 * epsilon) * epsilon;
-inline void __Fast_Two_Sum(double a, double b, double &x, double &y)
-{
-    x = a + b;
-    double bvirt = x - a;
-    y = b - bvirt;
-}
-inline void __Two_Product(double a, double b, double &x, double &y)
-{
-    x = a * b;
-    double abig = (1 << 27) * a;
-    double ahi = abig - (abig - a);
-    double alo = a - ahi;
-    double bbig = (1 << 27) * b;
-    double bhi = bbig - (bbig - b);
-    double blo = b - bhi;
-    y = alo * blo - (((x - ahi * bhi) - alo * bhi) - ahi * blo);
-}
-
 inline int orientation(const Eigen::Vector2d &a, const Eigen::Vector2d &b,
                        const Eigen::Vector2d &c)
 {
-    double acx = a[0] - c[0];
-    double bcx = b[0] - c[0];
-    double acy = a[1] - c[1];
-    double bcy = b[1] - c[1];
-
-    double detleft, detright, det;
-    double detsum, errbound;
-
-    __Two_Product(acx, bcy, detleft, detright);
-    __Two_Product(acy, bcx, det, detsum);
-
-    double det2 = detleft - det;
-    double detsum2, errbound2;
-    __Fast_Two_Sum(det2, detright, detsum2, errbound2);
-
-    if (detsum2 > errbound2 || -detsum2 > errbound2) {
-        return detsum2 > 0 ? 1 : -1;
-    }
-
-    return detsum2 == 0 ? 0 : (detsum2 > 0 ? 1 : -1);
+    double val = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+    if (std::abs(val) < 1e-12)
+        return 0;
+    return (val > 0) ? +1 : -1;
 }
 
 inline bool cw(const Eigen::Vector2d &a, //
