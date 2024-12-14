@@ -25,7 +25,12 @@ convex_hull = ConvexHull(points[:, :2])  # it's already N-by-2, I'm just emphasi
 
 plt.plot(points[:, 0], points[:, 1], "o")
 for simplex in convex_hull.simplices:
+    continue
     plt.plot(points[simplex, 0], points[simplex, 1], "g-", alpha=0.5)
+
+hull = convex_hull_indexes(points[:, :2])
+for i, j in zip(hull[:-1], hull[1:]):
+    plt.plot([points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], "g-", alpha=0.5)
 
 idxes = concave_hull_indexes(
     points[:, :2],
@@ -35,9 +40,9 @@ idxes = concave_hull_indexes(
 # you can get coordinates by `points[idxes]`
 assert np.all(points[idxes] == concave_hull(points, length_threshold=50))
 
-for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
-    seg = points[[f, t]]
-    plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
+# for f, t in zip(idxes[:-1], idxes[1:]):  # noqa
+#     seg = points[[f, t]]
+#     plt.plot(seg[:, 0], seg[:, 1], "r-", alpha=0.5)
 
 plt.gca().set_aspect("equal")
 # plt.savefig("docs/hull.png")
