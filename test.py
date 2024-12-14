@@ -2,7 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import ConvexHull
 
-from concave_hull import concave_hull, concave_hull_indexes, convex_hull_indexes
+from concave_hull import (  # noqa: F401
+    concave_hull,
+    concave_hull_indexes,
+    convex_hull_indexes,
+)
 
 points = []
 c = np.array([250, 250])
