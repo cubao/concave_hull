@@ -490,7 +490,7 @@ std::vector<int> concaveman_indexes(
     // index the points with an R-tree
     rtree<T, 2, MAX_CHILDREN, point_type> tree;
     for (size_t index = 0, N = points.size(); index < N; index++) {
-        point_type p{points[index][0], points[index][1], (T)index};
+        point_type p{points[index][0], points[index][1], static_cast<T>(index)};
         tree.insert(std::move(p), {p[0], p[1], p[0], p[1]});
     }
 
@@ -503,7 +503,7 @@ std::vector<int> concaveman_indexes(
     // queue with the nodes
     for (auto &idx : hull) {
         auto &pp = points[idx];
-        point_type p{pp[0], pp[1], (T)idx};
+        point_type p{pp[0], pp[1], static_cast<T>(idx)};
         tree.erase(p, {p[0], p[1], p[0], p[1]});
         last = circList.insert(last, p);
         queue.push_back(last);

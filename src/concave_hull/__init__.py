@@ -14,7 +14,7 @@ def concave_hull_indexes(
     *,
     concavity: float = 2.0,
     length_threshold: float = 0.0,
-    convex_hull_indexes: np.ndarray = None,  # noqa
+    convex_hull_indexes: np.ndarray | None = None,  # noqa
     is_wgs84: bool = False,
 ):
     """
@@ -35,9 +35,7 @@ def concave_hull_indexes(
     if is_wgs84:
         points = wgs84_to_east_north(points)
     if convex_hull_indexes is None:
-        print("shit me22")
         convex_hull_indexes = convex_hull_indexes_impl(points)
-        print("shit me33", convex_hull_indexes)
     return concave_hull_indexes_impl(
         points,
         concavity=concavity,
