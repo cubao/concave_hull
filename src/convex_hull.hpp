@@ -19,14 +19,12 @@ inline int orientation(const Eigen::Vector2d &a, //
                        const Eigen::Vector2d &b, //
                        const Eigen::Vector2d &c)
 {
-    // np.sign(np.cross(a->b, a->c)[2])
-    double v =
-        a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]);
-    if (v < 0)
-        return -1; // clockwise
-    if (v > 0)
-        return +1; // counter-clockwise
-    return 0;
+    const double EPSILON = 1e-12;
+    double v = a[0] * (b[1] - c[1]) + 
+               b[0] * (c[1] - a[1]) + 
+               c[0] * (a[1] - b[1]);
+    if (std::abs(v) < EPSILON) return 0;
+    return (v < 0) ? -1 : +1;
 }
 inline bool cw(const Eigen::Vector2d &a, //
                const Eigen::Vector2d &b, //
