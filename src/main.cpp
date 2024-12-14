@@ -36,6 +36,7 @@ convex_hull_indexes(const Eigen::Ref<const RowVectorsNx2> &points,
     for (const auto &p : hull) {
         index.push_back(static_cast<int>(p[2]));
     }
+    // std::reverse(index.begin(), index.end());
     return Eigen::VectorXi::Map(&index[0], index.size());
 }
 
