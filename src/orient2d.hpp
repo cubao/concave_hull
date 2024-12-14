@@ -103,8 +103,7 @@ double orient2dadapt(double ax, double ay, double bx, double by, double cx, doub
     double acy = ay - cy;
     double bcy = by - cy;
 
-    // TODO: implement Cross_Product macro
-    // Cross_Product(acx, bcx, acy, bcy, B);
+    Cross_Product(acx, bcx, acy, bcy, B);
 
     double det = estimate(4, B);
     double errbound = ccwerrboundB * detsum;
@@ -112,11 +111,10 @@ double orient2dadapt(double ax, double ay, double bx, double by, double cx, doub
         return det;
     }
 
-    // TODO: implement Two_Diff_Tail macro
-    // Two_Diff_Tail(ax, cx, acx, acxtail);
-    // Two_Diff_Tail(bx, cx, bcx, bcxtail);
-    // Two_Diff_Tail(ay, cy, acy, acytail);
-    // Two_Diff_Tail(by, cy, bcy, bcytail);
+    Two_Diff_Tail(ax, cx, acx, acxtail);
+    Two_Diff_Tail(bx, cx, bcx, bcxtail);
+    Two_Diff_Tail(ay, cy, acy, acytail);
+    Two_Diff_Tail(by, cy, bcy, bcytail);
 
     if (acxtail == 0 && acytail == 0 && bcxtail == 0 && bcytail == 0) {
         return det;
@@ -126,13 +124,13 @@ double orient2dadapt(double ax, double ay, double bx, double by, double cx, doub
     det += (acx * bcytail + bcy * acxtail) - (acy * bcxtail + bcx * acytail);
     if (det >= errbound || -det >= errbound) return det;
 
-    // Cross_Product(acxtail, bcx, acytail, bcy, u);
+    Cross_Product(acxtail, bcx, acytail, bcy, u);
     int C1len = sum(4, B, 4, u, C1);
 
-    // Cross_Product(acx, bcxtail, acy, bcytail, u);
+    Cross_Product(acx, bcxtail, acy, bcytail, u);
     int C2len = sum(C1len, C1, 4, u, C2);
 
-    // Cross_Product(acxtail, bcxtail, acytail, bcytail, u);
+    Cross_Product(acxtail, bcxtail, acytail, bcytail, u);
     int Dlen = sum(C2len, C2, 4, u, D);
 
     return D[Dlen - 1];
