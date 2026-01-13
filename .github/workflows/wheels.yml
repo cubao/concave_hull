@@ -55,7 +55,7 @@ jobs:
       env:
         CIBW_ARCHS_MACOS: universal2
         CIBW_ARCHS_WINDOWS: auto ARM64
-        CIBW_SKIP: "pp* *musllinux* *_i686 cp314-win*"
+        CIBW_SKIP: "pp* *musllinux* *_i686 cp314t-win*"
         CIBW_TEST_SKIP: "*macosx* *win* *aarch64 cp31* pp* *musllinux*"
         CIBW_BEFORE_BUILD: "pip install --prefer-binary numpy pytest"
 
