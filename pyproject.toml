@@ -1,12 +1,11 @@
 [build-system]
-requires = ["scikit-build-core>=0.3.3", "pybind11"]
+requires = ["scikit-build-core>=0.3.3", "pybind11", "cubao-headers>=0.0.8"]
 build-backend = "scikit_build_core.build"
 
 
 [project]
 name = "concave_hull"
-version = "0.0.9"
-url = "https://concave-hull.readthedocs.io"
+version = "0.1.0"
 description="A very fast 2D concave hull algorithm"
 readme = "README.md"
 authors = [
@@ -23,7 +22,12 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
+
+[project.urls]
+Homepage = "https://concave-hull.readthedocs.io"
 
 [project.optional-dependencies]
 test = ["pytest", "scipy"]
