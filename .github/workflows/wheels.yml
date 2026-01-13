@@ -57,7 +57,6 @@ jobs:
         CIBW_ARCHS_WINDOWS: auto ARM64
         CIBW_SKIP: "pp* *musllinux* *_i686"
         CIBW_TEST_SKIP: "*macosx* *win* *aarch64 cp31* pp* *musllinux*"
-        CIBW_ENVIRONMENT: "PIP_ONLY_BINARY=:all:"
         CIBW_BEFORE_BUILD: "pip install --prefer-binary numpy pytest"
 
     - name: Verify clean directory
