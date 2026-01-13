@@ -11,9 +11,12 @@
 """
 from __future__ import annotations
 
-import numpy
+import typing
 
-__all__ = [
+import numpy
+import numpy.typing
+
+__all__: list[str] = [
     "clockwise",
     "colinear",
     "concave_hull_indexes",
@@ -23,44 +26,48 @@ __all__ = [
 ]
 
 def clockwise(
-    prev: numpy.ndarray[numpy.float64[2, 1]],
-    curr: numpy.ndarray[numpy.float64[2, 1]],
-    next: numpy.ndarray[numpy.float64[2, 1]],
+    prev: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
+    curr: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
+    next: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
     *,
     include_colinear: bool = False,
 ) -> bool: ...
 def colinear(
-    prev: numpy.ndarray[numpy.float64[2, 1]],
-    curr: numpy.ndarray[numpy.float64[2, 1]],
-    next: numpy.ndarray[numpy.float64[2, 1]],
+    prev: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
+    curr: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
+    next: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
 ) -> bool: ...
 def concave_hull_indexes(
-    points: numpy.ndarray[numpy.float64[m, 2]],
+    points: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 2]"],
     *,
-    convex_hull_indexes: numpy.ndarray[numpy.int32[m, 1]],
-    concavity: float = 2.0,
-    length_threshold: float = 0.0,
-) -> numpy.ndarray[numpy.int32[m, 1]]:
+    convex_hull_indexes: typing.Annotated[numpy.typing.NDArray[numpy.int32], "[m, 1]"],
+    concavity: typing.SupportsFloat = 2.0,
+    length_threshold: typing.SupportsFloat = 0.0,
+) -> typing.Annotated[numpy.typing.NDArray[numpy.int32], "[m, 1]"]:
     """
     documents here: https://github.com/mapbox/concaveman
     """
 
 def convex_hull_indexes(
-    points: numpy.ndarray[numpy.float64[m, 2], numpy.ndarray.flags.c_contiguous],
+    points: typing.Annotated[
+        numpy.typing.NDArray[numpy.float64], "[m, 2]", "flags.c_contiguous"
+    ],
     *,
     include_colinear: bool = False,
     order_only: bool = False,
-) -> numpy.ndarray[numpy.int32[m, 1]]: ...
+) -> typing.Annotated[numpy.typing.NDArray[numpy.int32], "[m, 1]"]: ...
 def orientation(
-    prev: numpy.ndarray[numpy.float64[2, 1]],
-    curr: numpy.ndarray[numpy.float64[2, 1]],
-    next: numpy.ndarray[numpy.float64[2, 1]],
+    prev: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
+    curr: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
+    next: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"],
 ) -> int: ...
 def wgs84_to_east_north(
-    wgs84: numpy.ndarray[numpy.float64[m, 2], numpy.ndarray.flags.c_contiguous]
-) -> numpy.ndarray[numpy.float64[m, 2]]:
+    wgs84: typing.Annotated[
+        numpy.typing.NDArray[numpy.float64], "[m, 2]", "flags.c_contiguous"
+    ]
+) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 2]"]:
     """
     documents here: https://github.com/mapbox/cheap-ruler
     """
 
-__version__: str = "0.0.9"
+__version__: str = "0.1.0"
