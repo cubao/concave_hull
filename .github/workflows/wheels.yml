@@ -44,19 +44,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-14]
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
 
+    - name: Cache cibuildwheel
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/Library/Caches/pip
+          ~/.cache/pip
+          ~/AppData/Local/pip/Cache
+        key: cibw-pip-${{ matrix.os }}-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          cibw-pip-${{ matrix.os }}-
+
     - uses: pypa/cibuildwheel@v3.3.1
       env:
         CIBW_ARCHS_MACOS: universal2
-        CIBW_ARCHS_WINDOWS: auto ARM64
-        CIBW_SKIP: "pp* *musllinux* *_i686 cp314t-win*"
-        CIBW_TEST_SKIP: "*macosx* *win* *aarch64 cp31* pp* *musllinux*"
+        CIBW_ARCHS_WINDOWS: AMD64 ARM64
+        CIBW_SKIP: "pp* *musllinux* *_i686"
+        CIBW_TEST_SKIP: "*macosx* *win* *aarch64"
         CIBW_BEFORE_BUILD: "pip install --prefer-binary numpy pytest"
 
     - name: Verify clean directory
