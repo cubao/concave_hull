@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pyodide test</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #1b1f23;
+        --bg: #ffffff;
+        --muted: #57606a;
+        --border: #d0d7de;
+        --ok-bg: #e6ffec;
+        --ok-fg: #1a7f37;
+        --bad-bg: #ffebe9;
+        --bad-fg: #cf222e;
+        --run-bg: #fff8c5;
+        --run-fg: #7d4e00;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #e6edf3;
+          --bg: #0d1117;
+          --muted: #8b949e;
+          --border: #30363d;
+          --ok-bg: #12261e;
+          --ok-fg: #3fb950;
+          --bad-bg: #25171c;
+          --bad-fg: #f85149;
+          --run-bg: #2b2411;
+          --run-fg: #d29922;
+        }
+      }
+      body {
+        margin: 0 auto;
+        padding: 1.5rem;
+        max-width: 60rem;
+        font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        color: var(--fg);
+        background: var(--bg);
+      }
+      h1 {
+        font-size: 1.2rem;
+        margin: 0 0 0.25rem;
+      }
+      #meta {
+        color: var(--muted);
+        margin-bottom: 1rem;
+        white-space: pre-wrap;
+      }
+      #status {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-weight: 700;
+        background: var(--run-bg);
+        color: var(--run-fg);
+      }
+      #status.ok {
+        background: var(--ok-bg);
+        color: var(--ok-fg);
+      }
+      #status.fail {
+        background: var(--bad-bg);
+        color: var(--bad-fg);
+      }
+      pre {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.75rem;
+        overflow: auto;
+        max-height: 70vh;
+        white-space: pre-wrap;
+      }
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">&#215; pyodide</h1>
+    <div id="meta"></div>
+    <div id="status">loading pyodide&hellip;</div>
+    <pre id="log"></pre>
+
+    <script>
+      const logEl = document.getElementById("log");
+      const statusEl = document.getElementById("status");
+      const metaEl = document.getElementById("meta");
+      const titleEl = document.getElementById("title");
+
+      const params = new URLSearchParams(location.search);
+
+      function log(msg) {
+        logEl.textContent += msg + "\n";
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function setStatus(text, kind) {
+        statusEl.textContent = text;
+        statusEl.className = kind || "";
+      }
+
+      function fail(err) {
+        console.error(err);
+        setStatus("FAILED", "fail");
+        log("\n" + (err && err.stack ? err.stack : String(err)));
+      }
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = () => reject(new Error("failed to load " + src));
+          document.head.appendChild(s);
+        });
+      }
+
+      // Config comes from wheels.json (written by `make pyodide_web`); every
+      // field can be overridden with a query parameter.
+      async function readConfig() {
+        let cfg = { pyodide_version: "0.27.8", wheels: [], files: {} };
+        try {
+          cfg = Object.assign(cfg, await fetch("wheels.json", { cache: "no-store" }).then((r) => r.json()));
+        } catch (e) {
+          log("wheels.json not found, using defaults: " + e.message);
+        }
+        for (const key of ["pyodide_version", "indexURL"]) {
+          if (params.get(key)) cfg[key] = params.get(key);
+        }
+        if (params.get("wheel")) cfg.wheels = [params.get("wheel")];
+        if (!cfg.indexURL) {
+          cfg.indexURL = "https://cdn.jsdelivr.net/pyodide/v" + cfg.pyodide_version + "/full/";
+        }
+        return cfg;
+      }
+
+      function packageName(wheels) {
+        const file = (wheels[0] || "").split("/").pop();
+        return file ? file.split("-")[0] : "package";
+      }
+
+      function writeFile(pyodide, dest, bytes) {
+        const dir = dest.split("/").slice(0, -1).join("/");
+        if (dir) pyodide.FS.mkdirTree(dir);
+        pyodide.FS.writeFile(dest, bytes);
+      }
+
+      async function main() {
+        const cfg = await readConfig();
+        const pkg = packageName(cfg.wheels);
+        document.title = pkg + " @ pyodide";
+        titleEl.textContent = pkg + " \u00d7 pyodide";
+        metaEl.textContent =
+          "pyodide index: " + cfg.indexURL + "\n" +
+          "wheel(s):      " + (cfg.wheels.join(", ") || "(none)") + "\n" +
+          "test file(s):  " + Object.keys(cfg.files).filter((f) => f.includes("test_")).join(", ");
+        if (!cfg.wheels.length) {
+          throw new Error("no wheel configured: run `make pyodide_web` (or pass ?wheel=...)");
+        }
+
+        setStatus("loading pyodide " + cfg.pyodide_version + "\u2026");
+        log("== loading pyodide from " + cfg.indexURL);
+        await loadScript(cfg.indexURL + "pyodide.js");
+        const pyodide = await loadPyodide({ indexURL: cfg.indexURL });
+        log("== python " + pyodide.version + " ready");
+
+        setStatus("loading numpy + pytest\u2026");
+        await pyodide.loadPackage(["numpy", "pytest"]);
+        log("== numpy + pytest loaded");
+
+        setStatus("installing wheel\u2026");
+        for (const wheel of cfg.wheels) {
+          log("== loading " + wheel);
+          await pyodide.loadPackage(wheel);
+        }
+
+        setStatus("fetching test files\u2026");
+        const tests = [];
+        for (const [url, dest] of Object.entries(cfg.files)) {
+          const r = await fetch(url, { cache: "no-store" });
+          if (!r.ok) throw new Error("failed to fetch " + url + ": HTTP " + r.status);
+          writeFile(pyodide, dest, new Uint8Array(await r.arrayBuffer()));
+          if (dest.includes("/tests/")) tests.push(dest);
+          log("== " + url + " -> " + dest);
+        }
+        if (!tests.length) throw new Error("no test files configured in wheels.json");
+
+        const runner = await fetch("run_tests.py", { cache: "no-store" }).then((r) => r.text());
+        pyodide.FS.writeFile("/tmp/run_tests.py", runner);
+
+        setStatus("running tests\u2026");
+        // run_tests.py returns a JSON string: {exit_code, output}
+        const raw = pyodide.runPython(
+          [
+            "import json",
+            "from runpy import run_path",
+            "ret = run_path('/tmp/run_tests.py')['main'](" + JSON.stringify(tests) + ")",
+            "json.dumps(ret)",
+          ].join("\n"),
+          { globals: pyodide.globals },
+        );
+        const result = JSON.parse(raw);
+        log(result.output);
+        if (result.exit_code === 0) {
+          setStatus("ALL TESTS PASSED", "ok");
+        } else {
+          setStatus("TESTS FAILED (pytest exit " + result.exit_code + ")", "fail");
+        }
+      }
+
+      main().catch(fail);
+    </script>
+  </body>
+</html>

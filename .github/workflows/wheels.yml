@@ -80,9 +80,36 @@ jobs:
         path: wheelhouse/*.whl
 
 
+  build_wheel_pyodide:
+    name: Wheel on pyodide
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    # pyodide needs cibuildwheel>=3, the other wheels stay on v2.22.
+    # cibuildwheel installs pyodide-build/emsdk itself, builds with
+    # `pyodide build --exports whole_archive` and tests the wheel in a
+    # pyodide venv (test-extras = test-pyodide).
+    - uses: pypa/cibuildwheel@v4.2
+      env:
+        CIBW_PLATFORM: pyodide
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: cibw-wheels-pyodide
+        path: wheelhouse/*.whl
+
+
   upload_all:
     name: Upload if release
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_wheel_pyodide, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     environment: pypi
