@@ -36,6 +36,46 @@ pip install git+https://github.com/cubao/concave_hull.git
 
 (you can build wheels for later reuse by ` pip wheel git+https://github.com/cubao/concave_hull.git`)
 
+### in the browser (pyodide / wasm)
+
+A pyodide wheel is built by the `Wheel on pyodide` job in
+[`.github/workflows/wheels.yml`](.github/workflows/wheels.yml) and published to
+PyPI together with the other wheels. Inside pyodide:
+
+```js
+const pyodide = await loadPyodide();
+await pyodide.loadPackage(["numpy", "micropip"]);
+const micropip = pyodide.pyimport("micropip");
+await micropip.install("concave-hull"); // or a local wheel: "./concave_hull-...wasm32.whl"
+const { concave_hull } = pyodide.pyimport("concave_hull");
+```
+
+To build and test locally:
+
+```bash
+make pyodide_install   # pip install pyodide-build
+make pyodide_wheel     # -> dist/*wasm32.whl
+make pyodide_web       # builds, writes tests/pyodide/wheels.json, serves :8123
+# open http://localhost:8123/tests/pyodide/index.html
+```
+
+Each wheel is ABI-tagged for one pyodide runtime (`pyemscripten_2024_0_wasm32` …)
+and the page's pyodide version has to match that tag. CI builds one wheel per
+supported pyodide version; locally `pyodide build` picks the xbuildenv whose
+CPython matches your host interpreter, so a Python 3.12 host gets pyodide 0.27.x
+(ABI 2024_0). Use `pyodide xbuildenv install <version> --force` to target
+another version — `gen_wheels_json.py` then writes it into `wheels.json`, and
+`?pyodide_version=` overrides it in the browser.
+
+[`tests/pyodide/index.html`](tests/pyodide/index.html) loads pyodide (by default
+from the jsdelivr CDN), installs the wheel from `dist/` and runs `tests/` in the
+browser. If the CDN is slow, mirror the runtime once and the page picks it up
+automatically:
+
+```bash
+python tests/pyodide/fetch_pyodide_dist.py --version 0.27.8
+```
+
 ## Usage
 
 Signature:

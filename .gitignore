@@ -10,3 +10,5 @@ wheelhouse
 !test.py
 site
 stubs
+tests/pyodide/wheels.json
+tests/pyodide/pyodide-dist/

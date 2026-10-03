@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "concave_hull"
-version = "0.1.2"
+version = "0.1.3"
 description="A very fast 2D concave hull algorithm"
 readme = "README.md"
 authors = [
@@ -31,6 +31,9 @@ Homepage = "https://concave-hull.readthedocs.io"
 
 [project.optional-dependencies]
 test = ["pytest", "scipy"]
+# scipy is only pulled in at the top of a disabled benchmark test, and pyodide
+# ships scipy>=1.14.
+test-pyodide = ["pytest", "numpy"]
 
 
 [tool.scikit-build]
@@ -53,6 +56,14 @@ test-command = "pytest {project}/tests"
 test-extras = ["test"]
 test-skip = ["*universal2:arm64"]
 build-verbosity = 1
+
+# `--exports whole_archive` keeps the pybind11 module init symbol, otherwise
+# dropped by the linker; -p no:cacheprovider because the wasm side cannot
+# write .pytest_cache.
+[tool.cibuildwheel.pyodide]
+build-frontend = {name = "build", args = ["--exports", "whole_archive"]}
+test-command = "python -m pytest {project}/tests -p no:cacheprovider"
+test-extras = ["test-pyodide"]
 
 
 [tool.ruff]
